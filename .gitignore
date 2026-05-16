@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+.next/
+.nuxt/
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+secrets/
+*.pem
+*.key
+credentials.json
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs / runtime
+logs/
+*.log
+runtime/
+tmp/
+
+# Sarqt-specific
+data/runtime/
+data/state/_tmp_*
+data/state/_demo_*
+docs/_drafts/
+docs/_scratch/
+
+# Future: media uploads (если будут локально храниться)
+media/
+uploads/
+
+# Внутренние планинг-доки — на диске остаются, в публичный репозиторий не входят
+/CLAUDE.md
+/docs/
+/data/

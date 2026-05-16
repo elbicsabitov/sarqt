@@ -1,0 +1,21 @@
+{
+  "name": "sarqt — раздай и забери лишнюю еду",
+  "short_name": "sarqt",
+  "description": "Community food-sharing в Алматы. Кафе, тои и соседи отдают лишнюю еду тем, кто рядом. Бесплатно, без комиссий, без посредников.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FEF8F1",
+  "theme_color": "#EEC200",
+  "lang": "ru",
+  "categories": ["lifestyle", "social", "utilities"],
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
