@@ -12,6 +12,20 @@ export function renderRegionOptions(selected) {
   }).join('');
 }
 
+/** Loading-state placeholder: `count` shimmer cards shaped like offer cards. */
+export function renderSkeletonFeed(count = 3) {
+  const card = `
+    <div class="skeleton-card" aria-hidden="true">
+      <div class="skeleton-card__media"></div>
+      <div class="skeleton-card__body">
+        <div class="skeleton-line skeleton-line--title"></div>
+        <div class="skeleton-line skeleton-line--sub"></div>
+      </div>
+      <div class="skeleton-card__action"></div>
+    </div>`;
+  return card.repeat(count);
+}
+
 export function viewAbout() {
   return `
     <section class="page">
@@ -182,7 +196,7 @@ export function viewHome() {
           <span class="eyebrow">${t('home.feed.eyebrow')}</span>
           <h2 class="h2">${t('home.feed.title')}</h2>
         </div>
-        <div class="grid grid--3" id="home-feed"><div class="feed-loading">${t('home.feed.loading')}</div></div>
+        <div class="grid grid--3" id="home-feed" aria-busy="true" aria-label="${t('home.feed.loading')}">${renderSkeletonFeed(3)}</div>
         <div class="text-center mt-8">
           <a href="#/find" class="btn btn--ghost">${t('home.feed.link')}</a>
         </div>
@@ -358,7 +372,7 @@ export function viewFind() {
           <p class="lead">${t('find.head.lead')}</p>
         </div>
         <div class="flex gap-2 mb-8" style="flex-wrap:wrap">${chips}</div>
-        <div id="find-feed"><div class="feed-loading">${t('find.loading')}</div></div>
+        <div id="find-feed" aria-busy="true" aria-label="${t('find.loading')}"><div class="grid" style="gap:14px">${renderSkeletonFeed(3)}</div></div>
       </div>
     </section>`;
 }

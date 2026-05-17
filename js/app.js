@@ -184,6 +184,8 @@ async function hydrateHome() {
   if (myGen !== homeGen) return;
   const feed = $('#home-feed');
   if (!feed) return;
+  feed.setAttribute('aria-busy', 'false');
+  feed.removeAttribute('aria-label');
   if (!offers.ok) { feed.innerHTML = feedError(t(offers.error)); return; }
   if (offers.offers.length === 0) { feed.innerHTML = feedEmpty(t('feed.emptyHome')); return; }
   feed.innerHTML = offers.offers.slice(0, 3).map((o) => renderOfferCard(o)).join('');
@@ -197,6 +199,8 @@ async function hydrateFind() {
   if (myGen !== findGen) return;
   const feed = $('#find-feed');
   if (!feed) return;
+  feed.setAttribute('aria-busy', 'false');
+  feed.removeAttribute('aria-label');
   if (!res.ok) { feed.innerHTML = feedError(t(res.error)); return; }
   if (res.offers.length === 0) {
     feed.innerHTML = feedEmpty(t('feed.emptyFind'));
