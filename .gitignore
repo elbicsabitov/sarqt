@@ -66,6 +66,9 @@ docs/_scratch/
 media/
 uploads/
 
+# Brainstorm visual-companion mockups (ephemeral — superpowers tooling)
+.superpowers/
+
 # Внутренние планинг-доки — на диске остаются, в публичный репозиторий не входят
 /CLAUDE.md
 /docs/
