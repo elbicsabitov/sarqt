@@ -40,13 +40,21 @@ export function validateOffer(o) {
   return { ok: true };
 }
 
+/** ms-инстант из datetime-local строки, трактуемой как алматинское время; NaN если строка кривая. */
+function exactDateMs(exactDate) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(String(exactDate || ''));
+  if (!m) return NaN;
+  return Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) - ALMATY_OFFSET_MS;
+}
+
 /**
  * Считает момент протухания оффера из выбранного expiry-чипа.
- * @param {string} bucketKey - 'today' | '24h' | '72h'
+ * @param {string} bucketKey - 'today' | '24h' | '72h' | 'exact'
  * @param {Date} now
+ * @param {string|null} exactDate - datetime-local строка для режима 'exact'
  * @returns {Date}
  */
-export function computeExpiresAt(bucketKey, now = new Date()) {
+export function computeExpiresAt(bucketKey, now = new Date(), exactDate = null) {
   if (bucketKey === '24h') return new Date(now.getTime() + 24 * 60 * 60 * 1000);
   if (bucketKey === '72h') return new Date(now.getTime() + 72 * 60 * 60 * 1000);
   if (bucketKey === 'today') {
@@ -55,6 +63,11 @@ export function computeExpiresAt(bucketKey, now = new Date()) {
       almaty.getUTCFullYear(), almaty.getUTCMonth(), almaty.getUTCDate(), 23, 59, 59,
     );
     return new Date(endOfAlmatyDayUTC - ALMATY_OFFSET_MS);
+  }
+  if (bucketKey === 'exact') {
+    const ms = exactDateMs(exactDate);
+    if (Number.isNaN(ms)) throw new Error('bad exact date: ' + exactDate);
+    return new Date(ms);
   }
   throw new Error('unknown expiry bucket: ' + bucketKey);
 }

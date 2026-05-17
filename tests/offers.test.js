@@ -74,6 +74,17 @@ describe('computeExpiresAt', () => {
   it('throws on unknown bucket', () => {
     expect(() => computeExpiresAt('never', new Date())).toThrow();
   });
+  it('exact: parses an Almaty datetime-local string to UTC', () => {
+    // 22:00 Almaty (UTC+5) = 17:00 UTC
+    expect(computeExpiresAt('exact', new Date(), '2026-05-17T22:00').toISOString())
+      .toBe('2026-05-17T17:00:00.000Z');
+  });
+  it('exact: throws on a malformed exact date', () => {
+    expect(() => computeExpiresAt('exact', new Date(), 'not-a-date')).toThrow();
+  });
+  it('exact: throws when exactDate is missing', () => {
+    expect(() => computeExpiresAt('exact', new Date(), null)).toThrow();
+  });
 });
 
 describe('isExpired', () => {
