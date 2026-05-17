@@ -1,10 +1,11 @@
 // Sarqt service worker — minimal cache-first for PWA installability + offline shell
-const CACHE_NAME = 'sarqt-v4';
+const CACHE_NAME = 'sarqt-v5';
 const CORE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './favicon.svg',
+  './og-image.png',
   './404.html',
   './js/app.js',
   './js/state.js',
