@@ -7,6 +7,7 @@ export const state = {
     mode: 'restaurant', name: '', region: '', what: '',
     pickup_from: '', pickup_to: '', contact_phone: '', contact_tg: '',
     event_type: '', expiry: '', photoFile: null, contactExpanded: false,
+    sealAttested: false, exactDate: '',
   },
   filterFind: 'all',
   user: null,     // Supabase auth user, or null
@@ -19,6 +20,7 @@ export function freshShare(mode = 'restaurant') {
     mode, name: '', region: '', what: '',
     pickup_from: '', pickup_to: '', contact_phone: '', contact_tg: '',
     event_type: '', expiry: '', photoFile: null, contactExpanded: false,
+    sealAttested: false, exactDate: '',
   };
 }
 
