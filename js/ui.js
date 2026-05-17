@@ -16,7 +16,7 @@ export const ICONS = {
 // Big sigil for hero & anchor decorations — Figma V1 vector paths (frame 6056:4317)
 export const SIGIL_SVG = `<svg viewBox="0 0 142 116" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill-rule="evenodd" d="M 85.24 34.57 C 93.11 26.66 93.11 13.84 85.24 5.93 C 77.38 -1.98 64.62 -1.98 56.76 5.93 C 48.89 13.84 48.89 26.66 56.76 34.57 C 64.62 42.48 77.38 42.48 85.24 34.57 Z M 76.75 26.03 C 79.92 22.84 79.92 17.66 76.75 14.47 C 73.57 11.28 68.43 11.28 65.25 14.47 C 62.08 17.66 62.08 22.84 65.25 26.03 C 68.43 29.22 73.57 29.22 76.75 26.03 Z"/><path d="M 4.42 79.23 C 4.48 80.16 3.24 80.68 2.81 79.84 C 1.01 76.32 0 72.34 0 68.12 C 0 50.24 18.4 38.63 35.04 38.63 C 50.52 38.63 63.89 47.56 70.17 60.48 C 70.5 61.16 71.5 61.16 71.83 60.48 C 78.11 47.56 91.48 38.63 106.96 38.63 C 123.6 38.63 142 50.24 142 68.12 C 142 72.34 140.99 76.32 139.19 79.84 C 138.76 80.68 137.52 80.16 137.58 79.23 C 138.48 65.51 126.02 54.44 111.72 54.44 C 97.38 54.44 85.76 64.59 85.76 77.1 C 85.76 84.83 90.2 91.65 96.97 95.74 C 97.73 96.2 98.63 95.17 98.3 94.34 C 97.74 92.97 97.44 91.48 97.44 89.92 C 97.44 83.31 103.3 77.95 109.99 77.95 C 118.85 77.95 123.6 84.86 123.38 93.32 C 122.87 104.26 112.42 113 99.61 113 C 87.06 113 77 104.32 71.83 93.43 C 71.51 92.74 70.49 92.74 70.17 93.43 C 65 104.32 54.94 113 42.39 113 C 29.58 113 19.13 104.26 18.62 93.32 C 18.4 84.86 23.15 77.95 32.01 77.95 C 38.7 77.95 44.56 83.31 44.56 89.92 C 44.56 91.48 44.26 92.97 43.7 94.34 C 43.37 95.17 44.27 96.2 45.03 95.74 C 51.8 91.65 56.24 84.83 56.24 77.1 C 56.24 64.59 44.62 54.44 30.28 54.44 C 15.98 54.44 3.52 65.51 4.42 79.23 Z"/></svg>`;
 
-export function showModal({ icon, title, body, bodyHtml, code, primary, secondary }) {
+export function showModal({ icon, title, body, bodyHtml, primary, secondary }) {
   const overlay = $('#modal-overlay');
   const content = $('#modal-content');
   // `body` is escaped by default (XSS-safe). `bodyHtml` is for trusted markup only.
@@ -28,7 +28,6 @@ export function showModal({ icon, title, body, bodyHtml, code, primary, secondar
     <div class="modal__icon">${icon || '🍽️'}</div>
     <h2 class="modal__title">${escape(title || '')}</h2>
     <p class="modal__body">${bodyContent}</p>
-    ${code ? `<div class="modal__pickup-code">${escape(code)}</div>` : ''}
     <div class="flex gap-3" style="flex-wrap:wrap">
       ${primary ? `<a href="${escape(primary.href || '#')}" class="btn btn--primary" ${primary.href && !primary.href.startsWith('tel:') ? 'target="_blank" rel="noopener"' : ''}>${escape(primary.label)} ${ICONS.arrow}</a>` : ''}
       ${secondary ? `<button class="btn btn--ghost" id="modal-secondary">${escape(secondary.label)}</button>` : ''}
