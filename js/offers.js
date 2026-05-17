@@ -9,7 +9,7 @@ const ALMATY_OFFSET_MS = 5 * 60 * 60 * 1000; // Asia/Almaty = UTC+5, без DST
  * @returns {{ok: true}} | {{ok: false, error: string}} — error это i18n-ключ
  *          (caller переводит через t()), не готовая строка.
  */
-export function validateOffer(o) {
+export function validateOffer(o, now = new Date()) {
   if (!o.mode || !['restaurant', 'event', 'home'].includes(o.mode)) {
     return { ok: false, error: 'err.offer.badMode' };
   }
@@ -27,6 +27,12 @@ export function validateOffer(o) {
   }
   if (!EXPIRY_KEYS.includes(o.expiry)) {
     return { ok: false, error: 'err.offer.noExpiry' };
+  }
+  if (o.expiry === 'exact') {
+    const ms = exactDateMs(o.exactDate);
+    if (Number.isNaN(ms)) return { ok: false, error: 'err.offer.noExactDate' };
+    if (ms <= now.getTime()) return { ok: false, error: 'err.offer.pastDate' };
+    if (ms > now.getTime() + 7 * 24 * 60 * 60 * 1000) return { ok: false, error: 'err.offer.tooFarDate' };
   }
   if (!o.contact_phone || !o.contact_phone.trim()) {
     return { ok: false, error: 'err.offer.noPhone' };

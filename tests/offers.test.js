@@ -48,6 +48,22 @@ describe('validateOffer', () => {
     expect(validateOffer({ ...validOffer, mode: 'event', event_type: '' }).ok).toBe(false);
     expect(validateOffer({ ...validOffer, mode: 'event', event_type: 'Той' }).ok).toBe(true);
   });
+  it('accepts exact expiry with a valid future date', () => {
+    const now = new Date('2026-05-17T10:00:00Z');
+    expect(validateOffer({ ...validOffer, expiry: 'exact', exactDate: '2026-05-18T20:00' }, now).ok).toBe(true);
+  });
+  it('rejects exact expiry with no date', () => {
+    const now = new Date('2026-05-17T10:00:00Z');
+    expect(validateOffer({ ...validOffer, expiry: 'exact', exactDate: '' }, now).error).toBe('err.offer.noExactDate');
+  });
+  it('rejects an exact date in the past', () => {
+    const now = new Date('2026-05-17T10:00:00Z');
+    expect(validateOffer({ ...validOffer, expiry: 'exact', exactDate: '2026-05-16T20:00' }, now).error).toBe('err.offer.pastDate');
+  });
+  it('rejects an exact date more than 7 days ahead', () => {
+    const now = new Date('2026-05-17T10:00:00Z');
+    expect(validateOffer({ ...validOffer, expiry: 'exact', exactDate: '2026-06-01T20:00' }, now).error).toBe('err.offer.tooFarDate');
+  });
 });
 
 describe('computeExpiresAt', () => {
