@@ -487,12 +487,8 @@ async function submitOffer() {
     });
     if (!res.ok) { showError('s-error', t(res.error)); return; }
     state.share = seededShare(freshShare(s.mode), state.profile);
-    showModal({
-      icon: '🍽️', title: t('modal.publishedTitle'),
-      bodyHtml: t('modal.published', { region: escape(res.offer.region) }),
-      primary: { label: t('modal.publishedPrimary'), href: '#/find' },
-      secondary: { label: t('modal.publishedSecondary'), action: () => render() },
-    });
+    state.justPublished = true;
+    location.hash = '#/o/' + res.offer.id;
   } finally {
     offerSubmitting = false;
     setSubmitBtn('#s-submit', false, t('err.submitBtn'));
