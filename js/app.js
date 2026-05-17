@@ -4,15 +4,16 @@ import { state, freshShare, seededShare } from './state.js';
 import { $, $$, escape, showModal, closeModal, setTheme, openMobileMenu, closeMobileMenu, modalCaptureOpener, modalFocusOn, isMobileDevice } from './ui.js';
 import { t, getLang, setLang, initLang } from './i18n.js';
 import { render, setAfterRender } from './router.js';
-import { renderShareForm, renderOfferCard } from './views.js';
+import { renderShareForm, renderOfferCard, renderOfferDetail, renderOfferGone } from './views.js';
 import { REGIONS } from './config.js';
-import { validateOffer, computeExpiresAt, telHref } from './offers.js';
+import { validateOffer, computeExpiresAt, telHref, isUuid } from './offers.js';
 import { resizeImage } from './photo.js';
 import { signUp, signIn, signOut, currentUser, currentProfile, onAuthChange } from './auth.js';
 import {
   uploadPhoto, createOffer, markTaken, removeOffer, getOfferContact,
-  listActiveOffers, listMyOffers, listLedger,
+  listActiveOffers, listMyOffers, listLedger, getOfferById,
 } from './db.js';
+import { stickerModel, renderSticker } from './sticker.js';
 
 // ---------- inline form errors ----------
 function showError(elId, msg) {
@@ -239,6 +240,72 @@ async function hydrateLedger() {
   </table>`;
 }
 
+let offerGen = 0;
+
+async function hydrateOffer() {
+  const myGen = ++offerGen;
+  const id = state.offerId;
+  const box = $('#offer-view');
+  if (!box) return;
+  if (!isUuid(id)) {
+    box.setAttribute('aria-busy', 'false');
+    box.innerHTML = renderOfferGone();
+    return;
+  }
+  const res = await getOfferById(id);
+  if (myGen !== offerGen) return;
+  if (!box.isConnected) return;
+  box.setAttribute('aria-busy', 'false');
+  if (!res.ok) {
+    box.innerHTML = feedError(t(res.error))
+      + `<div class="text-center mt-8"><button class="btn btn--ghost" id="offer-retry">${t('offer.retry')}</button></div>`;
+    $('#offer-retry')?.addEventListener('click', hydrateOffer);
+    return;
+  }
+  if (!res.offer) { box.innerHTML = renderOfferGone(); return; }
+  const offer = res.offer;
+  const isOwner = !!(state.user && offer.author_id === state.user.id);
+  let stickerHtml = '';
+  if (isOwner) {
+    const strings = { seal: t('sticker.seal'), goodUntil: t('sticker.goodUntil'), footer: t('sticker.footer') };
+    stickerHtml = renderSticker(stickerModel(offer, getLang(), strings));
+  }
+  const justPublished = state.justPublished;
+  state.justPublished = false;
+  box.innerHTML = renderOfferDetail(offer, { isOwner, stickerHtml, justPublished });
+  bindCallButtons();
+  if (isOwner) bindStickerBlock(stickerHtml);
+}
+
+// «Печать» рендерит наклейку в скрытый #print-sticker (его показывает @media print);
+// «Показать на телефоне» — фуллскрин-оверлей для пути «без принтера».
+function bindStickerBlock(stickerHtml) {
+  const printBtn = $('[data-sticker-print]');
+  if (printBtn) printBtn.addEventListener('click', () => {
+    const slot = $('#print-sticker');
+    if (slot) { slot.innerHTML = stickerHtml; window.print(); }
+  });
+  const fsBtn = $('[data-sticker-fullscreen]');
+  if (fsBtn) fsBtn.addEventListener('click', () => openStickerFullscreen(stickerHtml));
+}
+
+function openStickerFullscreen(stickerHtml) {
+  let ov = $('#sticker-fs');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.id = 'sticker-fs';
+    ov.className = 'sticker-fs';
+    document.body.appendChild(ov);
+  }
+  ov.innerHTML = `<button class="sticker-fs__close" id="sticker-fs-close">${escape(t('sticker.fullscreen.close'))}</button>`
+    + `<div class="sticker-fs__inner">${stickerHtml}</div>`;
+  ov.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+  const close = () => { ov.classList.remove('is-open'); document.body.style.overflow = ''; };
+  $('#sticker-fs-close').addEventListener('click', close);
+  ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+}
+
 // ---------- owner controls (in /find) ----------
 function bindOwnerControls() {
   $$('[data-offer-action]').forEach((btn) => {
@@ -438,6 +505,7 @@ setAfterRender((route) => {
   if (route === '' || route === '/') hydrateHome();
   if (route === '/find') hydrateFind();
   if (route === '/ledger') hydrateLedger();
+  if (route.startsWith('/o/')) hydrateOffer();
 });
 
 // ---------- init ----------
