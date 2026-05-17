@@ -12,6 +12,8 @@ export const state = {
   filterFind: 'all',
   user: null,     // Supabase auth user, or null
   profile: null,  // profiles row, or null
+  justPublished: false, // true сразу после публикации — одноразовый баннер на #/o/<id>
+  offerId: null,        // id оффера для текущего роута #/o/<id>
 };
 
 /** Reset the share form to empty, keeping the chosen mode. */
