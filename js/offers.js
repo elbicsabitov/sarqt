@@ -88,3 +88,23 @@ export function offerStats(offers) {
 export function offerUrl(offerId) {
   return `${SITE_ORIGIN}/#/o/${offerId}`;
 }
+
+/**
+ * Человекочитаемое «Годен до» в алматинском времени: «22:00 · 17 мая».
+ * @param {string} expiresAtISO - ISO-строка из offers.expires_at
+ * @param {string} lang - 'ru' | 'kk' | 'en'
+ */
+export function formatGoodUntil(expiresAtISO, lang) {
+  const d = new Date(expiresAtISO);
+  const time = new Intl.DateTimeFormat(lang, {
+    timeZone: 'Asia/Almaty', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).format(d);
+  // Use formatToParts to keep genitive month inflection (e.g. 'мая' not 'май')
+  // and guarantee day-first order regardless of locale.
+  const parts = new Intl.DateTimeFormat(lang, {
+    timeZone: 'Asia/Almaty', day: 'numeric', month: 'long',
+  }).formatToParts(d);
+  const day = parts.find((p) => p.type === 'day').value;
+  const month = parts.find((p) => p.type === 'month').value;
+  return `${time} · ${day} ${month}`;
+}

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   validateOffer, computeExpiresAt, isExpired, formatWindow, telHref, offerStats, offerUrl,
+  formatGoodUntil,
 } from '../js/offers.js';
 
 const validOffer = {
@@ -118,5 +119,19 @@ describe('offerStats', () => {
 describe('offerUrl', () => {
   it('builds the public per-offer hash URL', () => {
     expect(offerUrl('abc-123')).toBe('https://sarqt.kz/#/o/abc-123');
+  });
+});
+
+describe('formatGoodUntil', () => {
+  it('formats an instant in Almaty time, ru', () => {
+    // 17:00 UTC = 22:00 Almaty (UTC+5)
+    expect(formatGoodUntil('2026-05-17T17:00:00Z', 'ru')).toBe('22:00 · 17 мая');
+  });
+  it('formats in English', () => {
+    expect(formatGoodUntil('2026-05-17T17:00:00Z', 'en')).toBe('22:00 · 17 May');
+  });
+  it('crosses midnight into the next Almaty day', () => {
+    // 20:00 UTC = 01:00 Almaty, May 18
+    expect(formatGoodUntil('2026-05-17T20:00:00Z', 'ru')).toBe('01:00 · 18 мая');
   });
 });
