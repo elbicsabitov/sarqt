@@ -9,7 +9,6 @@ export const state = {
     event_type: '', expiry: '', photoFile: null,
   },
   filterFind: 'all',
-  filterStories: 'all',
   user: null,     // Supabase auth user, or null
   profile: null,  // profiles row, or null
 };
