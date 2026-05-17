@@ -391,7 +391,7 @@ async function submitOffer() {
   const v = validateOffer({
     mode: s.mode, name: s.name, region: s.region, what: s.what,
     photoFile: s.photoFile, expiry: s.expiry, contact_phone: s.contact_phone,
-    event_type: s.event_type,
+    event_type: s.event_type, sealAttested: s.sealAttested, exactDate: s.exactDate,
   });
   if (!v.ok) { showError('s-error', t(v.error)); return; }
   if (!state.user) { openAuthModal(submitOffer); return; }
@@ -414,7 +414,7 @@ async function submitOffer() {
       name: s.name.trim(), region: s.region, what: s.what.trim(),
       photo_url: up.url,
       pickup_from: s.pickup_from || null, pickup_to: s.pickup_to || null,
-      expires_at: computeExpiresAt(s.expiry).toISOString(),
+      expires_at: computeExpiresAt(s.expiry, new Date(), s.exactDate).toISOString(),
       contact_phone: s.contact_phone.trim(), contact_tg: s.contact_tg.trim() || null,
       status: 'active',
     });
