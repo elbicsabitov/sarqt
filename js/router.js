@@ -3,7 +3,7 @@
 import { state } from './state.js';
 import { $, $$, closeMobileMenu } from './ui.js';
 import {
-  viewHome, viewShare, viewFind, viewLedger, viewAbout,
+  viewHome, viewShare, viewFind, viewLedger, viewAbout, viewOffer,
 } from './views.js';
 import { t } from './i18n.js';
 
@@ -19,8 +19,16 @@ export function setAfterRender(fn) { afterRender = fn; }
 export function render() {
   const path = location.hash.slice(1) || '';
   state.route = path;
-  const fn = routes[path] || viewHome;
-  $('#app').innerHTML = fn();
+  const offerMatch = /^\/o\/(.+)$/.exec(path);
+  let html;
+  if (offerMatch) {
+    state.offerId = offerMatch[1];
+    html = viewOffer();
+  } else {
+    state.offerId = null;
+    html = (routes[path] || viewHome)();
+  }
+  $('#app').innerHTML = html;
   window.scrollTo({ top: 0, behavior: 'instant' });
   updateActiveNav();
   closeMobileMenu();
