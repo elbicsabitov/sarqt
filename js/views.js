@@ -318,7 +318,7 @@ export function renderShareForm() {
     </div>
     <div class="form-group">
       <label class="label">${t('form.expiry.label')}</label>
-      <p class="input-hint" style="margin-bottom:8px">${t('form.expiry.hint')}</p>
+      <p class="input-hint" style="margin-bottom:8px">${escape(t('form.expiry.hint'))}</p>
       <div class="flex gap-2" style="flex-wrap:wrap">
         ${EXPIRY_BUCKETS.map((b) => `
           <button type="button" class="btn btn--sm ${s.expiry === b.key ? 'btn--primary' : 'btn--ghost'}" data-expiry="${b.key}" aria-pressed="${s.expiry === b.key}">${escape(t(b.labelKey))}</button>`).join('')}

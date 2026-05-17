@@ -73,6 +73,9 @@ describe('validateOffer', () => {
     expect(r.ok).toBe(false);
     expect(r.error).toBe('err.offer.noSeal');
   });
+  it('accepts an offer with the seal attestation', () => {
+    expect(validateOffer({ ...validOffer, sealAttested: true }).ok).toBe(true);
+  });
 });
 
 describe('computeExpiresAt', () => {
