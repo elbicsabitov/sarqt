@@ -105,15 +105,26 @@ export function setTheme(theme) {
   }
 }
 
+let _menuReleaseTrap = null;
+let _menuOpener = null;
+
 export function openMobileMenu() {
-  $('#mobile-menu').classList.add('is-open');
-  $('#mobile-menu').setAttribute('aria-hidden', 'false');
+  _menuOpener = document.activeElement;
+  const menu = $('#mobile-menu');
+  menu.classList.add('is-open');
+  menu.setAttribute('aria-hidden', 'false');
   $('#menu-open').setAttribute('aria-expanded', 'true');
   document.body.style.overflow = 'hidden';
+  _menuReleaseTrap = trapFocus(menu);
+  menu.querySelector(FOCUSABLE_SEL)?.focus();
 }
 export function closeMobileMenu() {
+  _menuReleaseTrap?.();
+  _menuReleaseTrap = null;
   $('#mobile-menu')?.classList.remove('is-open');
   $('#mobile-menu')?.setAttribute('aria-hidden', 'true');
   $('#menu-open')?.setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
+  _menuOpener?.focus?.();
+  _menuOpener = null;
 }
