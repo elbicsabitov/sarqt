@@ -218,7 +218,10 @@ export const MESSAGES = {
     'form.photo.hint': 'Фото обязательно — соседи должны видеть, что забирают.',
 
     // --- form: expiry ---
-    'form.expiry.label': 'До какого времени актуально',
+    'form.expiry.label': 'Годен до',
+    'form.expiry.hint': 'Это время попадёт на наклейку-пломбу и уберёт оффер из ленты, когда срок выйдет. Указывайте реальный срок годности еды.',
+    'form.expiry.exactLabel': 'Дата и время',
+    'expiry.exact': 'Точно',
 
     // --- form: pickup window ---
     'form.pickup.from': 'Забрать с',
@@ -238,6 +241,11 @@ export const MESSAGES = {
     // --- share: auth-signpost (guest notice) ---
     'share.guest.notice': 'Чтобы опубликовать оффер, нужен аккаунт.',
     'share.guest.signin': 'Войти',
+
+    // --- share: seal attestation ---
+    'share.seal.attest': 'Я запечатаю наклейкой sarqt каждый контейнер с едой и укажу честный срок.',
+    'share.seal.whatToggle': 'Что это?',
+    'share.seal.what': 'Наклейка-пломба печатается после публикации. Показывает соседу: еда из системы, со сроком, упаковка не вскрыта.',
 
     // --- call modal ---
     'call.number.label': 'Номер хозяина',
@@ -340,6 +348,10 @@ export const MESSAGES = {
     'err.offer.noPhone': 'Укажи телефон для звонка',
     'err.offer.shortPhone': 'Телефон выглядит неполным',
     'err.offer.noEventType': 'Выбери тип события',
+    'err.offer.noSeal': 'Отметьте, что запечатаете еду наклейкой sarqt.',
+    'err.offer.noExactDate': 'Укажите дату и время «годен до».',
+    'err.offer.pastDate': 'Срок «годен до» уже прошёл.',
+    'err.offer.tooFarDate': 'Срок «годен до» — не дальше 7 дней.',
 
     // --- err: network (общий для auth + db) ---
     'err.network': 'Нет связи с сервером. Проверь интернет',
@@ -589,7 +601,10 @@ export const MESSAGES = {
     'form.photo.hint': 'Фото міндетті — көршілер нені алып жатқанын көруі керек.',
 
     // --- form: expiry ---
-    'form.expiry.label': 'Қай уақытқа дейін өзекті',
+    'form.expiry.label': 'Жарамды мерзімі',
+    'form.expiry.hint': 'Бұл уақыт пломба-жапсырмаға түседі және мерзімі өткенде ұсынысты таспадан алып тастайды. Тағамның нақты жарамдылық мерзімін көрсетіңіз.',
+    'form.expiry.exactLabel': 'Күні мен уақыты',
+    'expiry.exact': 'Дәл',
 
     // --- form: pickup window ---
     'form.pickup.from': 'Қашаннан алу',
@@ -609,6 +624,11 @@ export const MESSAGES = {
     // --- share: auth-signpost (guest notice) ---
     'share.guest.notice': 'Ұсыныс жариялау үшін аккаунт қажет.',
     'share.guest.signin': 'Кіру',
+
+    // --- share: seal attestation ---
+    'share.seal.attest': 'Мен әр тағам контейнерін sarqt жапсырмасымен пломбалаймын және адал мерзім көрсетемін.',
+    'share.seal.whatToggle': 'Бұл не?',
+    'share.seal.what': 'Пломба-жапсырма жарияланғаннан кейін басып шығарылады. Көршіге көрсетеді: тағам жүйеден, мерзімі бар, орамы ашылмаған.',
 
     // --- call modal ---
     'call.number.label': 'Иесінің нөмірі',
@@ -711,6 +731,10 @@ export const MESSAGES = {
     'err.offer.noPhone': 'Қоңырауға арналған телефонды көрсет',
     'err.offer.shortPhone': 'Телефон толық емес сияқты',
     'err.offer.noEventType': 'Оқиға түрін таңда',
+    'err.offer.noSeal': 'Тағамды sarqt жапсырмасымен пломбалайтыныңызды белгілеңіз.',
+    'err.offer.noExactDate': '«Жарамды» күні мен уақытын көрсетіңіз.',
+    'err.offer.pastDate': '«Жарамды» мерзімі өтіп кеткен.',
+    'err.offer.tooFarDate': '«Жарамды» мерзімі — 7 күннен аспауы керек.',
 
     // --- err: network (общий для auth + db) ---
     'err.network': 'Сервермен байланыс жоқ. Интернетті тексер',
@@ -960,7 +984,10 @@ export const MESSAGES = {
     'form.photo.hint': 'A photo is required — neighbours need to see what they are picking up.',
 
     // --- form: expiry ---
-    'form.expiry.label': 'Available until what time',
+    'form.expiry.label': 'Good until',
+    'form.expiry.hint': 'This time goes on the seal sticker and removes the offer from the feed when it passes. Set the real shelf life of the food.',
+    'form.expiry.exactLabel': 'Date and time',
+    'expiry.exact': 'Exact',
 
     // --- form: pickup window ---
     'form.pickup.from': 'Pick up from',
@@ -980,6 +1007,11 @@ export const MESSAGES = {
     // --- share: auth-signpost (guest notice) ---
     'share.guest.notice': 'You need an account to publish an offer.',
     'share.guest.signin': 'Sign in',
+
+    // --- share: seal attestation ---
+    'share.seal.attest': 'I will seal every food container with a sarqt sticker and state an honest date.',
+    'share.seal.whatToggle': 'What is this?',
+    'share.seal.what': 'The seal sticker is printed after you publish. It shows the neighbour: the food is from the system, dated, packaging unopened.',
 
     // --- call modal ---
     'call.number.label': 'Owner\'s number',
@@ -1082,6 +1114,10 @@ export const MESSAGES = {
     'err.offer.noPhone': 'Enter a phone for calls',
     'err.offer.shortPhone': 'The phone number looks incomplete',
     'err.offer.noEventType': 'Pick a type of event',
+    'err.offer.noSeal': 'Confirm that you will seal the food with a sarqt sticker.',
+    'err.offer.noExactDate': 'Set the good-until date and time.',
+    'err.offer.pastDate': 'The good-until time is already in the past.',
+    'err.offer.tooFarDate': 'The good-until time must be within 7 days.',
 
     // --- err: network (общий для auth + db) ---
     'err.network': 'No connection to the server. Check your internet',
