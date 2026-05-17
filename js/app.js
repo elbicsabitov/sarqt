@@ -1,7 +1,7 @@
 // js/app.js — entry module: init, auth lifecycle, event binding, data
 // hydration, form handlers, auth UI. The only <script> index.html loads.
 import { state, freshShare } from './state.js';
-import { $, $$, escape, showModal, closeModal, setTheme, openMobileMenu, closeMobileMenu } from './ui.js';
+import { $, $$, escape, showModal, closeModal, setTheme, openMobileMenu, closeMobileMenu, modalCaptureOpener, modalFocusOn } from './ui.js';
 import { t, getLang, setLang, initLang } from './i18n.js';
 import { render, setAfterRender } from './router.js';
 import { renderShareForm, renderOfferCard } from './views.js';
@@ -96,6 +96,7 @@ async function doSignOut() {
 // ---------- auth modal ----------
 // onSuccess (optional) runs after a successful sign-in / sign-up.
 function openAuthModal(onSuccess) {
+  modalCaptureOpener();
   let mode = 'login'; // 'login' | 'register'
   const draw = () => {
     const content = $('#modal-content');
@@ -126,6 +127,7 @@ function openAuthModal(onSuccess) {
     $('#modal-close').addEventListener('click', closeModal);
     $('#auth-toggle').addEventListener('click', (e) => { e.preventDefault(); mode = isReg ? 'login' : 'register'; draw(); });
     $('#auth-submit').addEventListener('click', () => submitAuth(mode, onSuccess));
+    modalFocusOn();
   };
   const overlay = $('#modal-overlay');
   overlay.classList.add('is-open');
