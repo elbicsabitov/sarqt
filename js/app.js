@@ -334,10 +334,23 @@ function bindShareEvents() {
     el.addEventListener('click', () => { state.share.mode = el.dataset.mode; render(); });
   });
   $$('[data-event-type]').forEach((el) => {
-    el.addEventListener('click', () => { state.share.event_type = el.dataset.eventType; render(); });
+    el.addEventListener('click', () => {
+      state.share.event_type = el.dataset.eventType;
+      $$('[data-event-type]').forEach((card) => {
+        card.classList.toggle('is-selected', card.dataset.eventType === state.share.event_type);
+      });
+    });
   });
   $$('[data-expiry]').forEach((el) => {
-    el.addEventListener('click', () => { state.share.expiry = el.dataset.expiry; render(); });
+    el.addEventListener('click', () => {
+      state.share.expiry = el.dataset.expiry;
+      $$('[data-expiry]').forEach((b) => {
+        const on = b.dataset.expiry === state.share.expiry;
+        b.classList.toggle('btn--primary', on);
+        b.classList.toggle('btn--ghost', !on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+    });
   });
   [['s-name', 'name'], ['s-region', 'region'], ['s-what', 'what'],
    ['s-pickup-from', 'pickup_from'], ['s-pickup-to', 'pickup_to'],
