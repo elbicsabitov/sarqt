@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  validateOffer, computeExpiresAt, isExpired, formatWindow, telHref, offerStats,
+  validateOffer, computeExpiresAt, isExpired, formatWindow, telHref, offerStats, offerUrl,
 } from '../js/offers.js';
 
 const validOffer = {
@@ -112,5 +112,11 @@ describe('offerStats', () => {
   });
   it('handles empty list', () => {
     expect(offerStats([])).toEqual({ active: 0, taken: 0, total: 0 });
+  });
+});
+
+describe('offerUrl', () => {
+  it('builds the public per-offer hash URL', () => {
+    expect(offerUrl('abc-123')).toBe('https://sarqt.kz/#/o/abc-123');
   });
 });

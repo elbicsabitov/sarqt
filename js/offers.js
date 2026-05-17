@@ -1,5 +1,5 @@
 // js/offers.js — чистые функции домена офферов. Без DOM, без сети. Полностью юнит-тестируемо.
-import { REGIONS, EXPIRY_BUCKETS } from './config.js';
+import { REGIONS, EXPIRY_BUCKETS, SITE_ORIGIN } from './config.js';
 
 const EXPIRY_KEYS = EXPIRY_BUCKETS.map((b) => b.key);
 const ALMATY_OFFSET_MS = 5 * 60 * 60 * 1000; // Asia/Almaty = UTC+5, без DST
@@ -82,4 +82,9 @@ export function offerStats(offers) {
     taken: offers.filter((o) => o.status === 'taken').length,
     total: offers.length,
   };
+}
+
+/** Публичный hash-URL страницы конкретного оффера (цель QR-кода наклейки). */
+export function offerUrl(offerId) {
+  return `${SITE_ORIGIN}/#/o/${offerId}`;
 }
