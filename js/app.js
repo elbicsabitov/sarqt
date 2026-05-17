@@ -1,6 +1,6 @@
 // js/app.js — entry module: init, auth lifecycle, event binding, data
 // hydration, form handlers, auth UI. The only <script> index.html loads.
-import { state, freshShare } from './state.js';
+import { state, freshShare, seededShare } from './state.js';
 import { $, $$, escape, showModal, closeModal, setTheme, openMobileMenu, closeMobileMenu, modalCaptureOpener, modalFocusOn } from './ui.js';
 import { t, getLang, setLang, initLang } from './i18n.js';
 import { render, setAfterRender } from './router.js';
@@ -159,6 +159,7 @@ async function submitAuth(mode, onSuccess) {
   if (!res.ok) { showError('auth-error', t(res.error)); return; }
   state.user = res.user;
   state.profile = await currentProfile();
+  state.share = seededShare(state.share, state.profile);
   closeModal();
   renderAuthNav();
   render();
@@ -359,7 +360,7 @@ async function submitOffer() {
       status: 'active',
     });
     if (!res.ok) { showError('s-error', t(res.error)); return; }
-    state.share = freshShare(s.mode);
+    state.share = seededShare(freshShare(s.mode), state.profile);
     showModal({
       icon: '🍽️', title: t('modal.publishedTitle'),
       bodyHtml: t('modal.published', { region: escape(res.offer.region) }),
@@ -410,6 +411,7 @@ async function init() {
   // Cold-start: resolve the session BEFORE the first render (no guest flash).
   state.user = await currentUser();
   if (state.user) state.profile = await currentProfile();
+  state.share = seededShare(state.share, state.profile);
   renderAuthNav();
   translateChrome();
   translateMeta();
@@ -421,6 +423,7 @@ async function init() {
     setTimeout(async () => {
       state.user = user;
       state.profile = user ? await currentProfile() : null;
+      state.share = seededShare(state.share, state.profile);
       renderAuthNav();
     }, 0);
   });
