@@ -321,6 +321,8 @@ function bindShareEvents() {
     const hint = $('#s-photo-name');
     if (hint && state.share.photoFile) hint.textContent = state.share.photoFile.name;
   });
+  const editBtn = $('[data-contact-edit]');
+  if (editBtn) editBtn.addEventListener('click', () => { state.share.contactExpanded = true; render(); });
   const submit = $('#s-submit');
   if (submit) submit.addEventListener('click', submitOffer);
 }
@@ -424,6 +426,7 @@ async function init() {
       state.user = user;
       state.profile = user ? await currentProfile() : null;
       state.share = seededShare(state.share, state.profile);
+      if (!user) state.share.contactExpanded = false;
       renderAuthNav();
     }, 0);
   });

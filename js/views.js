@@ -259,7 +259,7 @@ export function renderOfferCard(offer, opts = {}) {
     </article>`;
 }
 
-/** The /share publish form — one form, mode-aware. */
+/** The /share publish form — one form, mode-aware, two tiers. */
 export function renderShareForm() {
   const s = state.share;
   const eventBlock = s.mode === 'event' ? `
@@ -275,18 +275,37 @@ export function renderShareForm() {
     </div>` : '';
   const nameLabel = s.mode === 'restaurant' ? t('form.name.restaurant')
     : s.mode === 'event' ? t('form.name.event') : t('form.name.home');
-  return `
-    ${eventBlock}
-    <div class="form-group">
-      <label class="label">${nameLabel}</label>
-      <input type="text" class="input" id="s-name" placeholder="${t('form.name.placeholder')}" value="${escape(s.name)}">
-    </div>
+
+  // Tier 2 — contact. Collapses to a one-line summary when the user is logged
+  // in and region + phone are already filled (prefilled from the profile).
+  const contactCollapsed = state.user && s.region && s.contact_phone && !s.contactExpanded;
+  const contactTier = contactCollapsed ? `
+    <div class="contact-summary">
+      <span class="contact-summary__text">${escape([s.region, s.contact_phone, s.contact_tg].filter(Boolean).join(' · '))}</span>
+      <button type="button" class="contact-summary__edit" data-contact-edit>${t('form.contact.edit')}</button>
+    </div>` : `
     <div class="form-group">
       <label class="label">${t('form.region.label')}</label>
       <select class="select" id="s-region">
         <option value="">${t('form.region.placeholder')}</option>
         ${renderRegionOptions(s.region)}
       </select>
+    </div>
+    <div class="form-group">
+      <label class="label">${t('form.phone.label')}</label>
+      <input type="tel" class="input" id="s-contact-phone" placeholder="${t('form.phone.placeholder')}" value="${escape(s.contact_phone)}">
+    </div>
+    <div class="form-group">
+      <label class="label">${t('form.tg.label')}</label>
+      <input type="text" class="input" id="s-contact-tg" placeholder="${t('form.tg.placeholder')}" value="${escape(s.contact_tg)}">
+    </div>`;
+
+  return `
+    <h3 class="form-tier__head">${t('form.tier.offer')}</h3>
+    ${eventBlock}
+    <div class="form-group">
+      <label class="label">${nameLabel}</label>
+      <input type="text" class="input" id="s-name" placeholder="${t('form.name.placeholder')}" value="${escape(s.name)}">
     </div>
     <div class="form-group">
       <label class="label">${t('form.what.label')}</label>
@@ -310,14 +329,8 @@ export function renderShareForm() {
       <div><label class="label">${t('form.pickup.to')}</label>
         <input type="time" class="input" id="s-pickup-to" value="${escape(s.pickup_to)}"></div>
     </div>
-    <div class="form-group">
-      <label class="label">${t('form.phone.label')}</label>
-      <input type="tel" class="input" id="s-contact-phone" placeholder="${t('form.phone.placeholder')}" value="${escape(s.contact_phone)}">
-    </div>
-    <div class="form-group">
-      <label class="label">${t('form.tg.label')}</label>
-      <input type="text" class="input" id="s-contact-tg" placeholder="${t('form.tg.placeholder')}" value="${escape(s.contact_tg)}">
-    </div>
+    <h3 class="form-tier__head">${t('form.tier.contact')}</h3>
+    ${contactTier}
     <div class="form-error" id="s-error" hidden></div>
     <button class="btn btn--primary btn--block btn--lg" id="s-submit">${t('form.submit')}</button>`;
 }
