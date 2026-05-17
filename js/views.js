@@ -318,9 +318,14 @@ export function renderShareForm() {
     </div>
     <div class="form-group">
       <label class="label">${t('form.expiry.label')}</label>
+      <p class="input-hint" style="margin-bottom:8px">${t('form.expiry.hint')}</p>
       <div class="flex gap-2" style="flex-wrap:wrap">
         ${EXPIRY_BUCKETS.map((b) => `
           <button type="button" class="btn btn--sm ${s.expiry === b.key ? 'btn--primary' : 'btn--ghost'}" data-expiry="${b.key}" aria-pressed="${s.expiry === b.key}">${escape(t(b.labelKey))}</button>`).join('')}
+      </div>
+      <div id="s-exact-wrap" style="margin-top:12px" ${s.expiry === 'exact' ? '' : 'hidden'}>
+        <label class="label" for="s-exact">${t('form.expiry.exactLabel')}</label>
+        <input type="datetime-local" class="input" id="s-exact" value="${escape(s.exactDate)}">
       </div>
     </div>
     <div class="grid grid--2" style="margin-bottom:20px;gap:12px">
@@ -331,8 +336,16 @@ export function renderShareForm() {
     </div>
     <h3 class="form-tier__head">${t('form.tier.contact')}</h3>
     ${contactTier}
+    <label class="seal-check">
+      <input type="checkbox" id="s-seal" ${s.sealAttested ? 'checked' : ''}>
+      <span>${escape(t('share.seal.attest'))}</span>
+    </label>
+    <details class="seal-what">
+      <summary>${escape(t('share.seal.whatToggle'))}</summary>
+      <p>${escape(t('share.seal.what'))}</p>
+    </details>
     <div class="form-error" id="s-error" hidden></div>
-    <button class="btn btn--primary btn--block btn--lg" id="s-submit">${t('form.submit')}</button>`;
+    <button class="btn btn--primary btn--block btn--lg" id="s-submit" ${s.sealAttested ? '' : 'disabled'}>${t('form.submit')}</button>`;
 }
 
 export function viewShare() {
