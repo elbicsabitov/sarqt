@@ -287,7 +287,7 @@ export function renderShareForm() {
       <label class="label">${t('form.expiry.label')}</label>
       <div class="flex gap-2" style="flex-wrap:wrap">
         ${EXPIRY_BUCKETS.map((b) => `
-          <button type="button" class="btn btn--sm ${s.expiry === b.key ? 'btn--primary' : 'btn--ghost'}" data-expiry="${b.key}">${escape(t(b.labelKey))}</button>`).join('')}
+          <button type="button" class="btn btn--sm ${s.expiry === b.key ? 'btn--primary' : 'btn--ghost'}" data-expiry="${b.key}" aria-pressed="${s.expiry === b.key}">${escape(t(b.labelKey))}</button>`).join('')}
       </div>
     </div>
     <div class="grid grid--2" style="margin-bottom:20px;gap:12px">
@@ -320,15 +320,15 @@ export function viewShare() {
         </div>
         <div class="card card--feature" style="max-width:760px;margin:0 auto">
           <div class="mode-tabs" role="tablist">
-            <button class="mode-tab ${mode === 'restaurant' ? 'is-active' : ''}" data-mode="restaurant" role="tab">
+            <button class="mode-tab ${mode === 'restaurant' ? 'is-active' : ''}" data-mode="restaurant" role="tab" aria-selected="${mode === 'restaurant'}">
               <span class="mode-tab__icon">🍽️</span><span>${t('share.modeTab.restaurant')}</span>
               <span class="mode-tab__sub">${t('share.modeTab.restaurant.sub')}</span>
             </button>
-            <button class="mode-tab ${mode === 'event' ? 'is-active' : ''}" data-mode="event" role="tab">
+            <button class="mode-tab ${mode === 'event' ? 'is-active' : ''}" data-mode="event" role="tab" aria-selected="${mode === 'event'}">
               <span class="mode-tab__icon">🎉</span><span>${t('share.modeTab.event')}</span>
               <span class="mode-tab__sub">${t('share.modeTab.event.sub')}</span>
             </button>
-            <button class="mode-tab ${mode === 'home' ? 'is-active' : ''}" data-mode="home" role="tab">
+            <button class="mode-tab ${mode === 'home' ? 'is-active' : ''}" data-mode="home" role="tab" aria-selected="${mode === 'home'}">
               <span class="mode-tab__icon">🏠</span><span>${t('share.modeTab.home')}</span>
               <span class="mode-tab__sub">${t('share.modeTab.home.sub')}</span>
             </button>
@@ -346,7 +346,7 @@ export function viewFind() {
   const filter = state.filterFind;
   const chipKeys = { all: 'find.filter.all', restaurant: 'find.filter.restaurant', event: 'find.filter.event', home: 'find.filter.home' };
   const chips = ['all', 'restaurant', 'event', 'home'].map((f) => `
-    <button class="btn ${filter === f ? 'btn--primary' : 'btn--ghost'} btn--sm" data-find-filter="${f}">
+    <button class="btn ${filter === f ? 'btn--primary' : 'btn--ghost'} btn--sm" data-find-filter="${f}" aria-pressed="${filter === f}">
       ${t(chipKeys[f])}
     </button>`).join('');
   return `
