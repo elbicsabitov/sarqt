@@ -528,7 +528,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 ::-webkit-scrollbar-thumb{background:var(--color-border);border-radius:6px;border:3px solid var(--color-bg)}
 ::-webkit-scrollbar-thumb:hover{background:var(--color-text-subtle)}
 
-@media print{.header,.footer,.mobile-menu,.icon-btn,.menu-btn,.fab,.btn{display:none!important}}
 .offer-card__media--photo{padding:0;overflow:hidden}
 .offer-card__media--photo img{width:100%;height:100%;object-fit:cover;display:block}
 .offer-card__owner{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
@@ -580,6 +579,49 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .seal-what summary{cursor:pointer;color:var(--color-text-muted);width:max-content}
 .seal-what p{margin:6px 0 0;color:var(--color-text-muted);line-height:1.5}
 #s-submit[disabled]{opacity:.5;cursor:not-allowed}
+/* per-offer page */
+.offer-detail{display:flex;flex-direction:column;border:1px solid var(--color-border);border-radius:16px;overflow:hidden;background:var(--color-surface)}
+.offer-detail__media img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
+.offer-detail__body{padding:20px;display:flex;flex-direction:column;gap:10px}
+.offer-detail__what{font-size:1.375rem;font-weight:800;margin:4px 0 0}
+.offer-detail__name{color:var(--color-text-muted);font-size:.9375rem}
+.offer-detail__good{font-size:1rem}
+.offer-detail__win{color:var(--color-text-muted);font-size:.875rem;display:flex;align-items:center;gap:6px}
+.offer-detail__trust{display:flex;align-items:center;gap:8px;color:var(--color-text-muted);font-size:.8125rem;margin-top:4px}
+.offer-detail__trust-sigil{width:22px;height:18px;color:var(--color-yellow);display:inline-flex}
+.offer-detail__trust-sigil svg{width:100%;height:100%}
+.offer-detail__banner{background:#FEF8F1;border:1px solid #EAD9A8;color:#7a6a3a;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:.9375rem}
+/* sticker block */
+.sticker-block{margin-top:24px;border:1px solid var(--color-border);border-radius:16px;padding:20px;background:var(--color-surface)}
+.sticker-block__preview{display:flex;justify-content:center;padding:20px 0 4px}
+.sticker-howto{margin-top:16px;font-size:.875rem;color:var(--color-text-muted)}
+.sticker-howto ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+/* the sticker itself */
+.stk{width:240px;background:#fff;border:1.5px solid #EAD9A8;border-radius:14px;overflow:hidden;font-family:'Inter',system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.14)}
+.stk__bar{height:7px;background:#EEC200}
+.stk__body{padding:17px 15px 14px;text-align:center}
+.stk__sigil{width:40px;height:33px;margin:0 auto 4px;color:#EEC200;display:flex}
+.stk__sigil svg{width:100%;height:100%}
+.stk__wm{font-weight:800;font-size:23px;letter-spacing:-.02em;color:#212121;line-height:1}
+.stk__seal{margin-top:8px;display:inline-block;font-size:8.5px;font-weight:800;letter-spacing:.15em;color:#fff;background:#B8941F;padding:4px 11px;border-radius:99px}
+.stk__date{margin-top:12px;padding:10px 6px;background:#FEF8F1;border:1.5px dashed #EEC200;border-radius:10px}
+.stk__date-lbl{font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#8A7D5E}
+.stk__date-val{margin-top:3px;font-size:19px;font-weight:800;color:#212121}
+.stk__qr{width:84px;height:84px;display:block;margin:13px auto 0}
+.stk__qr-fallback{margin:13px auto 0;font-size:9px;word-break:break-all;color:#616161;max-width:150px}
+.stk__foot{margin-top:10px;padding-top:9px;border-top:1px solid #EFE6D2;font-size:8.5px;line-height:1.45;color:#9A8F77}
+/* show-on-phone fullscreen */
+.sticker-fs{position:fixed;inset:0;z-index:200;background:rgba(20,18,12,.92);display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:24px}
+.sticker-fs.is-open{display:flex}
+.sticker-fs__close{background:#fff;border:none;border-radius:99px;padding:10px 20px;font-weight:700;cursor:pointer;font-family:inherit}
+.sticker-fs__inner{transform:scale(1.35)}
+/* print: only the seal sticker */
+#print-sticker{display:none}
+@media print{
+  body>*:not(#print-sticker){display:none!important}
+  #print-sticker{display:block!important}
+  #print-sticker .stk{width:70mm;box-shadow:none;margin:8mm auto}
+}
 </style>
 </head>
 <body>
@@ -697,6 +739,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   <div class="modal" id="modal-content"></div>
 </div>
 
+<div id="print-sticker" aria-hidden="true"></div>
 <script type="module" src="./js/app.js"></script>
 </body>
 </html>
