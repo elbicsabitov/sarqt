@@ -337,6 +337,11 @@ export function renderShareForm() {
 
 export function viewShare() {
   const mode = state.share.mode;
+  const guestNotice = !state.user ? `
+        <div class="share-signpost" role="status">
+          <span>${t('share.guest.notice')}</span>
+          <button type="button" class="btn btn--primary btn--sm" data-share-signin>${t('share.guest.signin')}</button>
+        </div>` : '';
   return `
     <section class="page">
       <div class="container">
@@ -345,6 +350,7 @@ export function viewShare() {
           <h1 class="h1">${t('share.head.title')}</h1>
           <p class="lead">${t('share.head.lead')}</p>
         </div>
+        ${guestNotice}
         <div class="card card--feature" style="max-width:760px;margin:0 auto">
           <div class="mode-tabs" role="tablist">
             <button class="mode-tab ${mode === 'restaurant' ? 'is-active' : ''}" data-mode="restaurant" role="tab" aria-selected="${mode === 'restaurant'}">
