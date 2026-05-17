@@ -79,6 +79,13 @@ export async function listActiveOffers({ mode } = {}) {
   return { ok: true, offers: data };
 }
 
+/** Fetch one offer by id. RLS gates visibility (active+unexpired, or own). */
+export async function getOfferById(id) {
+  const { data, error } = await supabase.from('offers').select(OFFER_COLS).eq('id', id).maybeSingle();
+  if (error) return { ok: false, error: dbMessage(error) };
+  return { ok: true, offer: data };
+}
+
 /** List every offer authored by the given user (any status), newest first. */
 export async function listMyOffers(userId) {
   const { data, error } = await supabase.from('offers').select(OFFER_COLS)

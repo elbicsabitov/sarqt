@@ -7,7 +7,7 @@ vi.mock('../js/supabaseClient.js', async () => ({
 import { mockSupabase, resetMock } from './helpers/mockSupabase.js';
 import {
   uploadPhoto, createOffer, markTaken, removeOffer, getOfferContact,
-  listActiveOffers, listMyOffers, listLedger,
+  listActiveOffers, listMyOffers, listLedger, getOfferById,
 } from '../js/db.js';
 
 beforeEach(resetMock);
@@ -139,6 +139,26 @@ describe('listMyOffers', () => {
     expect(calls.find((c) => c.method === 'from').args[0]).toBe('offers');
     expect(calls.find((c) => c.method === 'eq').args).toEqual(['author_id', 'user-5']);
     expect(calls.find((c) => c.method === 'order').args).toEqual(['created_at', { ascending: false }]);
+  });
+});
+
+describe('getOfferById', () => {
+  it('returns the offer when found', async () => {
+    mockSupabase.__setQueryResult({ data: { id: 'o1', mode: 'home' }, error: null });
+    const res = await getOfferById('o1');
+    expect(res).toEqual({ ok: true, offer: { id: 'o1', mode: 'home' } });
+    const calls = mockSupabase.__calls();
+    expect(calls.find((c) => c.method === 'from').args[0]).toBe('offers');
+    expect(calls.find((c) => c.method === 'eq').args).toEqual(['id', 'o1']);
+    expect(calls.some((c) => c.method === 'maybeSingle')).toBe(true);
+  });
+  it('returns offer:null when RLS hides the row or it does not exist', async () => {
+    mockSupabase.__setQueryResult({ data: null, error: null });
+    expect(await getOfferById('o1')).toEqual({ ok: true, offer: null });
+  });
+  it('returns an error result on failure', async () => {
+    mockSupabase.__setQueryResult({ data: null, error: { message: 'boom' } });
+    expect((await getOfferById('o1')).ok).toBe(false);
   });
 });
 
