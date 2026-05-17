@@ -230,6 +230,21 @@ export const MESSAGES = {
     'form.tg.label': 'Telegram (необязательно)',
     'form.tg.placeholder': '@username',
 
+    // --- form: two-tier sections ---
+    'form.tier.offer': 'Что отдаёте',
+    'form.tier.contact': 'Контакт хозяина',
+    'form.contact.edit': 'Изменить',
+
+    // --- share: auth-signpost (guest notice) ---
+    'share.guest.notice': 'Чтобы опубликовать оффер, нужен аккаунт.',
+    'share.guest.signin': 'Войти',
+
+    // --- call modal ---
+    'call.number.label': 'Номер хозяина',
+    'call.btn.dial': 'Позвонить',
+    'call.btn.copy': 'Скопировать',
+    'call.btn.copied': 'Скопировано ✓',
+
     // --- form: submit ---
     'form.submit': '+ Опубликовать',
 
@@ -586,6 +601,21 @@ export const MESSAGES = {
     'form.tg.label': 'Telegram (міндетті емес)',
     'form.tg.placeholder': '@username',
 
+    // --- form: two-tier sections ---
+    'form.tier.offer': 'Не бересіз',
+    'form.tier.contact': 'Иесінің байланысы',
+    'form.contact.edit': 'Өзгерту',
+
+    // --- share: auth-signpost (guest notice) ---
+    'share.guest.notice': 'Ұсыныс жариялау үшін аккаунт қажет.',
+    'share.guest.signin': 'Кіру',
+
+    // --- call modal ---
+    'call.number.label': 'Иесінің нөмірі',
+    'call.btn.dial': 'Қоңырау шалу',
+    'call.btn.copy': 'Көшіру',
+    'call.btn.copied': 'Көшірілді ✓',
+
     // --- form: submit ---
     'form.submit': '+ Жариялау',
 
@@ -941,6 +971,21 @@ export const MESSAGES = {
     'form.phone.placeholder': '+7 (777) 123 45 67',
     'form.tg.label': 'Telegram (optional)',
     'form.tg.placeholder': '@username',
+
+    // --- form: two-tier sections ---
+    'form.tier.offer': 'What you\'re giving',
+    'form.tier.contact': 'Owner\'s contact',
+    'form.contact.edit': 'Edit',
+
+    // --- share: auth-signpost (guest notice) ---
+    'share.guest.notice': 'You need an account to publish an offer.',
+    'share.guest.signin': 'Sign in',
+
+    // --- call modal ---
+    'call.number.label': 'Owner\'s number',
+    'call.btn.dial': 'Call',
+    'call.btn.copy': 'Copy',
+    'call.btn.copied': 'Copied ✓',
 
     // --- form: submit ---
     'form.submit': '+ Post',
