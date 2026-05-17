@@ -3,7 +3,8 @@
 import { escape, ICONS, SIGIL_SVG } from './ui.js';
 import { state } from './state.js';
 import { REGIONS, EXPIRY_BUCKETS, EVENT_TYPES } from './config.js';
-import { t } from './i18n.js';
+import { t, getLang } from './i18n.js';
+import { formatGoodUntil } from './offers.js';
 
 export function renderRegionOptions(selected) {
   return REGIONS.map((r) => {
@@ -239,6 +240,7 @@ export function renderOfferCard(offer, opts = {}) {
     ? `${escape(offer.pickup_from)}–${escape(offer.pickup_to)}` : '';
   const owner = opts.owned ? `
     <div class="offer-card__owner" data-owner-id="${escape(offer.id)}">
+      <a class="btn btn--sm btn--ghost" href="#/o/${escape(offer.id)}">${t('sticker.cardBtn')}</a>
       <button class="btn btn--sm btn--ghost" data-offer-action="taken" data-offer-id="${escape(offer.id)}">${t('offer.taken')}</button>
       <button class="btn btn--sm btn--ghost" data-offer-action="remove" data-offer-id="${escape(offer.id)}">${t('offer.remove')}</button>
     </div>` : '';
@@ -421,4 +423,71 @@ export function viewLedger() {
         <div id="ledger-feed"><div class="feed-loading">${t('ledger.loading')}</div></div>
       </div>
     </section>`;
+}
+
+/** Per-offer page shell (#/o/<id>) — app.js hydrates #offer-view. */
+export function viewOffer() {
+  return `
+    <section class="page">
+      <div class="container" style="max-width:660px">
+        <div id="offer-view" aria-busy="true">${renderSkeletonFeed(1)}</div>
+      </div>
+    </section>`;
+}
+
+/**
+ * Detail content for one offer. opts: { isOwner, stickerHtml, justPublished }.
+ * stickerHtml is pre-rendered by app.js (sticker.js) — owner-only.
+ */
+export function renderOfferDetail(offer, opts = {}) {
+  const { isOwner = false, stickerHtml = '', justPublished = false } = opts;
+  const win = (offer.pickup_from && offer.pickup_to)
+    ? `${escape(offer.pickup_from)}–${escape(offer.pickup_to)}` : '';
+  const banner = justPublished
+    ? `<div class="offer-detail__banner">${escape(t('offer.published.banner'))}</div>` : '';
+  const stickerBlock = (isOwner && stickerHtml) ? `
+    <div class="sticker-block">
+      <h2 class="h4">${escape(t('sticker.block.title'))}</h2>
+      <div class="sticker-block__preview">${stickerHtml}</div>
+      <div class="flex gap-2" style="flex-wrap:wrap;margin-top:14px">
+        <button class="btn btn--primary btn--sm" type="button" data-sticker-print>${escape(t('sticker.print'))}</button>
+        <button class="btn btn--ghost btn--sm" type="button" data-sticker-fullscreen>${escape(t('sticker.showOnPhone'))}</button>
+      </div>
+      <div class="sticker-howto">
+        <h3 class="h5">${escape(t('sticker.howto.title'))}</h3>
+        <p>${escape(t('sticker.howto.why'))}</p>
+        <ol>
+          <li>${escape(t('sticker.howto.step1'))}</li>
+          <li>${escape(t('sticker.howto.step2'))}</li>
+          <li>${escape(t('sticker.howto.step3'))}</li>
+          <li>${escape(t('sticker.howto.step4'))}</li>
+        </ol>
+      </div>
+    </div>` : '';
+  return `
+    ${banner}
+    <article class="offer-detail">
+      <div class="offer-detail__media"><img src="${escape(offer.photo_url)}" alt="${escape(offer.what)}"></div>
+      <div class="offer-detail__body">
+        <span class="pill pill--${escape(offer.mode)}">${t('ledger.mode.' + offer.mode)}</span>
+        <h1 class="offer-detail__what">${escape(offer.what)}</h1>
+        <p class="offer-detail__name">${escape(offer.name)} · ${escape(offer.region)}</p>
+        <div class="offer-detail__good">${escape(t('offer.goodUntil'))}: <strong>${escape(formatGoodUntil(offer.expires_at, getLang()))}</strong></div>
+        ${win ? `<p class="offer-detail__win"><span class="offer-card__meta-icon">${ICONS.clock}</span> ${win}</p>` : ''}
+        <button class="btn btn--primary btn--block" type="button" data-offer-call="${escape(offer.id)}" data-offer-name="${escape(offer.name)}">${escape(t('offer.call'))}</button>
+        <div class="offer-detail__trust"><span class="offer-detail__trust-sigil">${SIGIL_SVG}</span><span>${escape(t('offer.trust'))}</span></div>
+      </div>
+    </article>
+    ${stickerBlock}
+    <div class="text-center mt-8"><a href="#/find" class="btn btn--ghost">${escape(t('offer.more'))}</a></div>`;
+}
+
+/** Friendly "offer unavailable" block (expired / taken / not found / bad id). */
+export function renderOfferGone() {
+  return `
+    <div class="card text-center" style="padding:48px 24px">
+      <div style="font-size:3rem;margin-bottom:12px">🌿</div>
+      <p class="text-muted">${escape(t('offer.gone'))}</p>
+      <div class="mt-8"><a href="#/find" class="btn btn--ghost">${escape(t('offer.more'))}</a></div>
+    </div>`;
 }
