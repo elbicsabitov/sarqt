@@ -128,3 +128,10 @@ export function closeMobileMenu() {
   _menuOpener?.focus?.();
   _menuOpener = null;
 }
+
+// True for phones/tablets (where a tel: link opens a dialer). Decides call UX.
+export function isMobileDevice() {
+  const uaData = navigator.userAgentData;
+  if (uaData && typeof uaData.mobile === 'boolean') return uaData.mobile;
+  return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+}

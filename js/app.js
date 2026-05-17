@@ -1,7 +1,7 @@
 // js/app.js — entry module: init, auth lifecycle, event binding, data
 // hydration, form handlers, auth UI. The only <script> index.html loads.
 import { state, freshShare, seededShare } from './state.js';
-import { $, $$, escape, showModal, closeModal, setTheme, openMobileMenu, closeMobileMenu, modalCaptureOpener, modalFocusOn } from './ui.js';
+import { $, $$, escape, showModal, closeModal, setTheme, openMobileMenu, closeMobileMenu, modalCaptureOpener, modalFocusOn, isMobileDevice } from './ui.js';
 import { t, getLang, setLang, initLang } from './i18n.js';
 import { render, setAfterRender } from './router.js';
 import { renderShareForm, renderOfferCard } from './views.js';
@@ -260,26 +260,59 @@ function bindOwnerControls() {
   });
 }
 
-// ---------- call buttons (offer cards) ----------
-// The contact phone is not in the feed payload (finding H-2) — fetch it on
-// demand via the get_offer_contact RPC, then hand off to the device dialer.
+// ----- call buttons (offer cards) -----
+// Contact phone is not in the feed payload (finding H-2) — fetch on demand via
+// the get_offer_contact RPC. Mobile: hand off to the dialer. Desktop: show a
+// contact modal (tel: is often a no-op on desktop).
 function bindCallButtons() {
   $$('[data-offer-call]').forEach((btn) => {
     btn.addEventListener('click', async () => {
       if (btn.dataset.calling) return;
       btn.dataset.calling = '1';
-      const res = await getOfferContact(btn.dataset.offerCall);
-      delete btn.dataset.calling;
-      if (!res.ok) {
-        showModal({
-          icon: '⚠️', title: t('modal.failTitle'), body: t(res.error),
-          secondary: { label: t('modal.failClose'), action: closeModal },
-        });
-        return;
+      try {
+        const res = await getOfferContact(btn.dataset.offerCall);
+        if (!res.ok) {
+          showModal({
+            icon: '⚠️', title: t('modal.failTitle'), body: t(res.error),
+            secondary: { label: t('modal.failClose'), action: closeModal },
+          });
+          return;
+        }
+        if (isMobileDevice()) {
+          window.location.href = telHref(res.phone);
+        } else {
+          showCallModal(btn.dataset.offerName || '', res.phone);
+        }
+      } finally {
+        delete btn.dataset.calling;
       }
-      window.location.href = telHref(res.phone);
     });
   });
+}
+
+// Desktop contact modal: owner name, number, dial link, copy button.
+function showCallModal(name, phone) {
+  showModal({
+    icon: '📞',
+    title: name,
+    bodyHtml: `<span class="call-modal__label">${t('call.number.label')}</span>`
+      + `<a class="call-modal__number" href="${escape(telHref(phone))}">${escape(phone)}</a>`
+      + `<button type="button" class="btn btn--ghost btn--sm" id="call-copy">${t('call.btn.copy')}</button>`,
+    primary: { label: t('call.btn.dial'), href: telHref(phone) },
+    secondary: { label: t('modal.failClose'), action: closeModal },
+  });
+  const copyBtn = $('#call-copy');
+  if (copyBtn) copyBtn.addEventListener('click', () => copyText(phone, copyBtn));
+}
+
+async function copyText(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.textContent = t('call.btn.copied');
+    btn.disabled = true;
+  } catch (e) {
+    // Clipboard blocked — the number stays visible in the modal to copy by hand.
+  }
 }
 
 let offerSubmitting = false;

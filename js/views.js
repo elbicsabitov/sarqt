@@ -255,7 +255,7 @@ export function renderOfferCard(offer, opts = {}) {
         </div>
         ${owner}
       </div>
-      <button class="offer-card__action" type="button" data-offer-call="${escape(offer.id)}" aria-label="${t('offer.callAria', { name: escape(offer.name) })}">${ICONS.phone}</button>
+      <button class="offer-card__action" type="button" data-offer-call="${escape(offer.id)}" data-offer-name="${escape(offer.name)}" aria-label="${t('offer.callAria', { name: escape(offer.name) })}">${ICONS.phone}</button>
     </article>`;
 }
 
