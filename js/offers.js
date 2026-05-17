@@ -111,6 +111,11 @@ export function offerStats(offers) {
   };
 }
 
+/** Проверяет, что строка — канонический UUID (защита per-offer роута от мусора). */
+export function isUuid(s) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(s || ''));
+}
+
 /** Публичный hash-URL страницы конкретного оффера (цель QR-кода наклейки). */
 export function offerUrl(offerId) {
   return `${SITE_ORIGIN}/#/o/${offerId}`;

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   validateOffer, computeExpiresAt, isExpired, formatWindow, telHref, offerStats, offerUrl,
-  formatGoodUntil,
+  formatGoodUntil, isUuid,
 } from '../js/offers.js';
 
 const validOffer = {
@@ -158,6 +158,17 @@ describe('offerStats', () => {
 describe('offerUrl', () => {
   it('builds the public per-offer hash URL', () => {
     expect(offerUrl('abc-123')).toBe('https://sarqt.kz/#/o/abc-123');
+  });
+});
+
+describe('isUuid', () => {
+  it('accepts a canonical uuid', () => {
+    expect(isUuid('3f2504e0-4f89-41d3-9a0c-0305e82c3301')).toBe(true);
+  });
+  it('rejects non-uuid strings', () => {
+    expect(isUuid('hello')).toBe(false);
+    expect(isUuid('')).toBe(false);
+    expect(isUuid('123')).toBe(false);
   });
 });
 
