@@ -165,10 +165,21 @@ describe('isUuid', () => {
   it('accepts a canonical uuid', () => {
     expect(isUuid('3f2504e0-4f89-41d3-9a0c-0305e82c3301')).toBe(true);
   });
+  it('accepts an uppercase uuid', () => {
+    expect(isUuid('3F2504E0-4F89-41D3-9A0C-0305E82C3301')).toBe(true);
+  });
   it('rejects non-uuid strings', () => {
     expect(isUuid('hello')).toBe(false);
     expect(isUuid('')).toBe(false);
     expect(isUuid('123')).toBe(false);
+  });
+  it('rejects null and undefined', () => {
+    expect(isUuid(null)).toBe(false);
+    expect(isUuid(undefined)).toBe(false);
+  });
+  it('rejects almost-valid uuids (too short, trailing junk)', () => {
+    expect(isUuid('3f2504e0-4f89-41d3-9a0c-0305e82c330')).toBe(false);
+    expect(isUuid('3f2504e0-4f89-41d3-9a0c-0305e82c3301-x')).toBe(false);
   });
 });
 

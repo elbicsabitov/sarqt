@@ -283,7 +283,11 @@ function bindStickerBlock(stickerHtml) {
   const printBtn = $('[data-sticker-print]');
   if (printBtn) printBtn.addEventListener('click', () => {
     const slot = $('#print-sticker');
-    if (slot) { slot.innerHTML = stickerHtml; window.print(); }
+    if (slot) {
+      slot.innerHTML = stickerHtml;
+      window.print(); // синхронный — блокирует до закрытия диалога
+      slot.innerHTML = ''; // не оставляем наклейку для последующих Ctrl+P
+    }
   });
   const fsBtn = $('[data-sticker-fullscreen]');
   if (fsBtn) fsBtn.addEventListener('click', () => openStickerFullscreen(stickerHtml));
@@ -291,19 +295,32 @@ function bindStickerBlock(stickerHtml) {
 
 function openStickerFullscreen(stickerHtml) {
   let ov = $('#sticker-fs');
+  const close = () => {
+    const el = $('#sticker-fs');
+    if (el) el.classList.remove('is-open');
+    document.body.style.overflow = '';
+  };
   if (!ov) {
     ov = document.createElement('div');
     ov.id = 'sticker-fs';
     ov.className = 'sticker-fs';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
     document.body.appendChild(ov);
+    // Бэкдроп-клик + кнопка закрытия (делегирование) и Escape — биндятся ОДИН раз
+    // на узел (он переиспользуется), иначе слушатели копятся с каждым открытием.
+    ov.addEventListener('click', (e) => {
+      if (e.target === ov || e.target.closest('[data-fs-close]')) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && ov.classList.contains('is-open')) close();
+    });
   }
-  ov.innerHTML = `<button class="sticker-fs__close" id="sticker-fs-close">${escape(t('sticker.fullscreen.close'))}</button>`
+  ov.innerHTML = `<button class="sticker-fs__close" type="button" data-fs-close>${escape(t('sticker.fullscreen.close'))}</button>`
     + `<div class="sticker-fs__inner">${stickerHtml}</div>`;
   ov.classList.add('is-open');
   document.body.style.overflow = 'hidden';
-  const close = () => { ov.classList.remove('is-open'); document.body.style.overflow = ''; };
-  $('#sticker-fs-close').addEventListener('click', close);
-  ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+  ov.querySelector('[data-fs-close]').focus();
 }
 
 // ---------- owner controls (in /find) ----------

@@ -437,7 +437,9 @@ export function viewOffer() {
 
 /**
  * Detail content for one offer. opts: { isOwner, stickerHtml, justPublished }.
- * stickerHtml is pre-rendered by app.js (sticker.js) — owner-only.
+ * stickerHtml is trusted HTML pre-rendered by renderSticker (js/sticker.js) and
+ * is injected WITHOUT escaping (owner-only). renderSticker escapes its own
+ * inputs — if that ever changes, this preview becomes an XSS sink.
  */
 export function renderOfferDetail(offer, opts = {}) {
   const { isOwner = false, stickerHtml = '', justPublished = false } = opts;
