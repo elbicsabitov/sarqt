@@ -350,11 +350,14 @@ function bindShareEvents() {
         b.classList.toggle('btn--ghost', !on);
         b.setAttribute('aria-pressed', String(on));
       });
+      const exactWrap = $('#s-exact-wrap');
+      if (exactWrap) exactWrap.hidden = state.share.expiry !== 'exact';
     });
   });
   [['s-name', 'name'], ['s-region', 'region'], ['s-what', 'what'],
    ['s-pickup-from', 'pickup_from'], ['s-pickup-to', 'pickup_to'],
-   ['s-contact-phone', 'contact_phone'], ['s-contact-tg', 'contact_tg']].forEach(([id, field]) => {
+   ['s-contact-phone', 'contact_phone'], ['s-contact-tg', 'contact_tg'],
+   ['s-exact', 'exactDate']].forEach(([id, field]) => {
     const el = $('#' + id);
     if (el) {
       el.addEventListener('input', (e) => { state.share[field] = e.target.value; });
@@ -371,6 +374,12 @@ function bindShareEvents() {
   if (signinBtn) signinBtn.addEventListener('click', () => openAuthModal());
   const editBtn = $('[data-contact-edit]');
   if (editBtn) editBtn.addEventListener('click', () => { state.share.contactExpanded = true; render(); });
+  const seal = $('#s-seal');
+  if (seal) seal.addEventListener('change', () => {
+    state.share.sealAttested = seal.checked;
+    const submitBtn = $('#s-submit');
+    if (submitBtn) submitBtn.disabled = !seal.checked;
+  });
   const submit = $('#s-submit');
   if (submit) submit.addEventListener('click', submitOffer);
 }
