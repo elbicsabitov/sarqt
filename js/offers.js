@@ -43,6 +43,9 @@ export function validateOffer(o, now = new Date()) {
   if (o.mode === 'event' && (!o.event_type || !o.event_type.trim())) {
     return { ok: false, error: 'err.offer.noEventType' };
   }
+  if (!o.sealAttested) {
+    return { ok: false, error: 'err.offer.noSeal' };
+  }
   return { ok: true };
 }
 

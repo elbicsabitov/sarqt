@@ -7,7 +7,7 @@ import {
 const validOffer = {
   mode: 'home', name: 'Айгерим', region: 'Алмалы',
   what: '15 мантов с тыквой', photoFile: {}, expiry: '24h',
-  contact_phone: '+7 777 123 45 67', event_type: '',
+  contact_phone: '+7 777 123 45 67', event_type: '', sealAttested: true,
 };
 
 describe('validateOffer', () => {
@@ -67,6 +67,11 @@ describe('validateOffer', () => {
   it('rejects an exact overflow date like Feb 30', () => {
     const now = new Date('2026-01-01T10:00:00Z');
     expect(validateOffer({ ...validOffer, expiry: 'exact', exactDate: '2026-02-30T12:00' }, now).error).toBe('err.offer.noExactDate');
+  });
+  it('rejects an offer without the seal attestation', () => {
+    const r = validateOffer({ ...validOffer, sealAttested: false });
+    expect(r.ok).toBe(false);
+    expect(r.error).toBe('err.offer.noSeal');
   });
 });
 
