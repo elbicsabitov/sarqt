@@ -3,6 +3,9 @@
 export const SUPABASE_URL = 'https://xufuatxahshbkfltghhu.supabase.co';
 export const SUPABASE_KEY = 'sb_publishable_58jKusSKlPPWkMnswGbi_Q_D7IOCsI4';
 
+// Публичный адрес сайта — для QR-кода наклейки (ведёт на страницу оффера).
+export const SITE_ORIGIN = 'https://sarqt.kz';
+
 // 8 районов Алматы + Астана + «другой город»
 export const REGIONS = [
   'Бостандык', 'Медеу', 'Алмалы', 'Ауэзов', 'Турксиб', 'Алатау', 'Жетысу',
@@ -14,6 +17,7 @@ export const EXPIRY_BUCKETS = [
   { key: 'today', labelKey: 'expiry.today' },
   { key: '24h', labelKey: 'expiry.24h' },
   { key: '72h', labelKey: 'expiry.72h' },
+  { key: 'exact', labelKey: 'expiry.exact' },
 ];
 
 // Типы события для режима «Той» формы публикации.
