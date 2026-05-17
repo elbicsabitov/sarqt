@@ -35,4 +35,10 @@ describe('renderSticker', () => {
     expect(evil).toContain('&lt;x&gt;');
     expect(evil).not.toContain('<x>');
   });
+  it('falls back to URL text when the QR encoder fails', () => {
+    const tooLong = { id: 'x'.repeat(3000), expires_at: '2026-05-17T17:00:00Z' };
+    const html = renderSticker(stickerModel(tooLong, 'ru', strings));
+    expect(html).toContain('stk__qr-fallback');
+    expect(html).not.toMatch(/<svg[^>]*class="stk__qr"/);
+  });
 });
