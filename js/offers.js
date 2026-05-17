@@ -50,7 +50,12 @@ export function validateOffer(o, now = new Date()) {
 function exactDateMs(exactDate) {
   const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(String(exactDate || ''));
   if (!m) return NaN;
-  return Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) - ALMATY_OFFSET_MS;
+  const ms = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) - ALMATY_OFFSET_MS;
+  const back = new Date(ms + ALMATY_OFFSET_MS);
+  if (back.getUTCFullYear() !== +m[1] || back.getUTCMonth() !== +m[2] - 1
+      || back.getUTCDate() !== +m[3] || back.getUTCHours() !== +m[4]
+      || back.getUTCMinutes() !== +m[5]) return NaN;
+  return ms;
 }
 
 /**
@@ -114,7 +119,8 @@ export function offerUrl(offerId) {
  * @param {string} lang - 'ru' | 'kk' | 'en'
  */
 export function formatGoodUntil(expiresAtISO, lang) {
-  const d = new Date(expiresAtISO);
+  const d = new Date(expiresAtISO == null ? NaN : expiresAtISO);
+  if (Number.isNaN(d.getTime())) return '';
   const time = new Intl.DateTimeFormat(lang, {
     timeZone: 'Asia/Almaty', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
   }).format(d);

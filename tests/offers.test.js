@@ -64,6 +64,10 @@ describe('validateOffer', () => {
     const now = new Date('2026-05-17T10:00:00Z');
     expect(validateOffer({ ...validOffer, expiry: 'exact', exactDate: '2026-06-01T20:00' }, now).error).toBe('err.offer.tooFarDate');
   });
+  it('rejects an exact overflow date like Feb 30', () => {
+    const now = new Date('2026-01-01T10:00:00Z');
+    expect(validateOffer({ ...validOffer, expiry: 'exact', exactDate: '2026-02-30T12:00' }, now).error).toBe('err.offer.noExactDate');
+  });
 });
 
 describe('computeExpiresAt', () => {
@@ -160,5 +164,14 @@ describe('formatGoodUntil', () => {
   it('crosses midnight into the next Almaty day', () => {
     // 20:00 UTC = 01:00 Almaty, May 18
     expect(formatGoodUntil('2026-05-17T20:00:00Z', 'ru')).toBe('01:00 · 18 мая');
+  });
+  it('returns empty string for an invalid or missing date', () => {
+    expect(formatGoodUntil(null, 'ru')).toBe('');
+    expect(formatGoodUntil('not-a-date', 'ru')).toBe('');
+  });
+  it('formats in Kazakh without throwing', () => {
+    const out = formatGoodUntil('2026-05-17T17:00:00Z', 'kk');
+    expect(out).toContain('22:00');
+    expect(out.length).toBeGreaterThan(6);
   });
 });
