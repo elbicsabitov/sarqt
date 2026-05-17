@@ -338,7 +338,7 @@ export function renderShareForm() {
 export function viewShare() {
   const mode = state.share.mode;
   const guestNotice = !state.user ? `
-        <div class="share-signpost" role="status">
+        <div class="share-signpost" role="note">
           <span>${t('share.guest.notice')}</span>
           <button type="button" class="btn btn--primary btn--sm" data-share-signin>${t('share.guest.signin')}</button>
         </div>` : '';
