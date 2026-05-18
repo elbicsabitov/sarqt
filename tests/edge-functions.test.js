@@ -22,6 +22,15 @@ describe('Edge Functions security invariants (spec §4)', () => {
     expect(send).toContain('withinRateLimit');
     expect(send).toMatch(/429/);
   });
+  it('send-otp defaults to Mobizon test-mode and never silently passes a rejected send', () => {
+    expect(send).toContain("Deno.env.get('MOBIZON_TEST_MODE')");
+    expect(send).toContain("'params[test]'");
+    // default-safe: real send only when explicitly opted out
+    expect(send).toMatch(/MOBIZON_TEST_MODE'\)\s*!==\s*'0'/);
+    // result is inspected, not assumed: success requires Mobizon code 0
+    expect(send).toMatch(/\.code\s*!==\s*0/);
+    expect(send).not.toMatch(/console\.(log|error|warn)\([^)]*MOBIZON/);
+  });
   it('verify-otp checks expiry + attempts + hash and sets phone_verified', () => {
     expect(verify).toContain('isOtpExpired');
     expect(verify).toContain('attemptsExhausted');
