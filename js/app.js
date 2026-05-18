@@ -9,6 +9,7 @@ import { REGIONS } from './config.js';
 import { validateOffer, computeExpiresAt, telHref, isUuid } from './offers.js';
 import { resizeImage } from './photo.js';
 import { signUp, signIn, signOut, currentUser, currentProfile, onAuthChange } from './auth.js';
+import { validatePassword } from './validate.js';
 import {
   uploadPhoto, createOffer, markTaken, removeOffer, getOfferContact,
   listActiveOffers, listMyOffers, listLedger, getOfferById,
@@ -159,6 +160,11 @@ async function submitAuth(mode, onSuccess) {
   const email = $('#auth-email').value.trim();
   const password = $('#auth-password').value;
   if (!email || !password) { showError('auth-error', t('err.emailPassword')); return; }
+  // Charset gate BEFORE any Supabase call — both register and login.
+  // A valid account can't have a non-ASCII password (blocked at register),
+  // so non-ASCII on login = 100% layout mistake → exact message, no API call.
+  const pw = validatePassword(password);
+  if (!pw.ok) { showError('auth-error', t(pw.error)); return; }
   const btn = $('#auth-submit');
   btn.disabled = true;
   let res;
