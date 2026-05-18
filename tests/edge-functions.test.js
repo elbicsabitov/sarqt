@@ -28,9 +28,11 @@ describe('Edge Functions security invariants (spec §4)', () => {
     expect(verify).toContain('verifyOtpHash');
     expect(verify).toContain('phone_verified');
   });
-  it('reuses the pure core (no re-implemented crypto)', () => {
-    expect(send).toMatch(/from ['"]\.\.\/\.\.\/\.\.\/js\/otp\.js['"]/);
-    expect(verify).toMatch(/from ['"]\.\.\/\.\.\/\.\.\/js\/otp\.js['"]/);
+  it('reuses the pure core via the bundled _shared mirror (TD-065)', () => {
+    expect(send).toMatch(/from ['"]\.\.\/_shared\/otp\.js['"]/);
+    expect(verify).toMatch(/from ['"]\.\.\/_shared\/otp\.js['"]/);
+    expect(send).not.toContain('../../../js/otp.js');
+    expect(verify).not.toContain('../../../js/otp.js');
   });
   it('errors are logged server-side, not silently swallowed (no bare catch (_e))', () => {
     expect(send).not.toContain('catch (_e)');

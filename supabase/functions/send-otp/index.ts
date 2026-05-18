@@ -2,7 +2,7 @@
 // Mobizon REST. Ключ ТОЛЬКО из Deno.env. Не логирует ключ/код.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
-import { generateOtp, hashOtp, withinRateLimit } from '../../../js/otp.js';
+import { generateOtp, hashOtp, withinRateLimit } from '../_shared/otp.js';
 
 const OTP_TTL_MS = 10 * 60 * 1000;
 const GLOBAL_DAILY_CAP = 500;

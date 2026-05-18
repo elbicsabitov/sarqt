@@ -2,7 +2,7 @@
 // expiry/attempts/hash → phone_verified=true. Ключ Mobizon не нужен.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
-import { isOtpExpired, attemptsExhausted, verifyOtpHash } from '../../../js/otp.js';
+import { isOtpExpired, attemptsExhausted, verifyOtpHash } from '../_shared/otp.js';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
