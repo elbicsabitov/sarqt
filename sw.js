@@ -14,6 +14,7 @@ const CORE_ASSETS = [
   './js/views.js',
   './js/config.js',
   './js/offers.js',
+  './js/validate.js',
   './js/sticker.js',
   './js/vendor/qrcode.esm.js',
   './js/photo.js',
