@@ -2,6 +2,7 @@
 // импортируется и фронт-тестами (Vitest/Node), и Edge Functions (Deno).
 // Никаких DOM/Node/Deno-специфичных API — кроссрантайм по контракту.
 // Спека: docs/superpowers/specs/2026-05-18-auth-recovery-identity-design.md §4.
+// MIRRORED → supabase/functions/_shared/otp.js — edit BOTH; tests/otp-shared-drift.test.js enforces byte-identity.
 
 /** Криптослучайный 6-значный код, zero-padded. */
 export function generateOtp() {
