@@ -6,6 +6,15 @@ import { REGIONS, EXPIRY_BUCKETS, EVENT_TYPES } from './config.js';
 import { t, getLang } from './i18n.js';
 import { formatGoodUntil } from './offers.js';
 
+// Almaty wall-clock (UTC+5, no DST) as a datetime-local string YYYY-MM-DDTHH:MM.
+// Used to bound the "exact" date picker so the native control opens within a
+// valid range instead of an unbounded empty field (TD-060).
+function almatyLocal(offsetMs = 0) {
+  return new Date(Date.now() + 5 * 3600e3 + offsetMs).toISOString().slice(0, 16);
+}
+const CAL_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+const CLOCK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+
 export function renderRegionOptions(selected) {
   return REGIONS.map((r) => {
     const label = r === 'Другой город' ? t('offer.region.other') : r;
@@ -327,14 +336,17 @@ export function renderShareForm() {
       </div>
       <div id="s-exact-wrap" style="margin-top:12px" ${s.expiry === 'exact' ? '' : 'hidden'}>
         <label class="label" for="s-exact">${t('form.expiry.exactLabel')}</label>
-        <input type="datetime-local" class="input" id="s-exact" value="${escape(s.exactDate)}">
+        <div class="picker">
+          <input type="datetime-local" class="input" id="s-exact" value="${escape(s.exactDate)}" min="${almatyLocal()}" max="${almatyLocal(7 * 864e5)}">
+          <span class="picker__icon">${CAL_ICON}</span>
+        </div>
       </div>
     </div>
     <div class="grid grid--2" style="margin-bottom:20px;gap:12px">
-      <div><label class="label">${t('form.pickup.from')}</label>
-        <input type="time" class="input" id="s-pickup-from" value="${escape(s.pickup_from)}"></div>
-      <div><label class="label">${t('form.pickup.to')}</label>
-        <input type="time" class="input" id="s-pickup-to" value="${escape(s.pickup_to)}"></div>
+      <div><label class="label" for="s-pickup-from">${t('form.pickup.from')}</label>
+        <div class="picker"><input type="time" class="input" id="s-pickup-from" value="${escape(s.pickup_from)}" step="900"><span class="picker__icon">${CLOCK_ICON}</span></div></div>
+      <div><label class="label" for="s-pickup-to">${t('form.pickup.to')}</label>
+        <div class="picker"><input type="time" class="input" id="s-pickup-to" value="${escape(s.pickup_to)}" step="900"><span class="picker__icon">${CLOCK_ICON}</span></div></div>
     </div>
     <h3 class="form-tier__head">${t('form.tier.contact')}</h3>
     ${contactTier}

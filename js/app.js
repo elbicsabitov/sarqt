@@ -32,24 +32,41 @@ function setSubmitBtn(sel, disabled, text) {
 }
 
 // ---------- auth nav ----------
+// Fills BOTH the header slot (#auth-slot, desktop) and the off-canvas menu
+// slot (#auth-slot-menu, mobile) — on mobile the header controls are
+// CSS-collapsed, so logout/login must also live in the menu. Buttons use
+// data-attrs (not ids) since the markup renders into two places.
 function renderAuthNav() {
   const tools = $('.nav__tools');
-  if (!tools) return;
-  let slot = $('#auth-slot');
-  if (!slot) {
-    slot = document.createElement('div');
-    slot.id = 'auth-slot';
-    slot.className = 'auth-slot';
-    tools.prepend(slot);
+  if (tools) {
+    let slot = $('#auth-slot');
+    if (!slot) {
+      slot = document.createElement('div');
+      slot.id = 'auth-slot';
+      slot.className = 'auth-slot';
+      tools.prepend(slot);
+    }
+    fillAuthSlot(slot, false);
   }
+  const menuSlot = $('#auth-slot-menu');
+  if (menuSlot) fillAuthSlot(menuSlot, true);
+}
+
+function fillAuthSlot(slot, inMenu) {
   if (state.user) {
     const name = (state.profile && state.profile.display_name) || t('auth.navProfile');
     slot.innerHTML = `<span class="auth-slot__name">${escape(name)}</span>
-      <button class="btn btn--ghost btn--sm" id="auth-signout">${t('auth.navSignOut')}</button>`;
-    $('#auth-signout').addEventListener('click', doSignOut);
+      <button class="btn btn--ghost btn--sm" type="button" data-auth-signout>${t('auth.navSignOut')}</button>`;
+    slot.querySelector('[data-auth-signout]').addEventListener('click', () => {
+      if (inMenu) closeMobileMenu();
+      doSignOut();
+    });
   } else {
-    slot.innerHTML = `<button class="btn btn--ghost btn--sm" id="auth-open">${t('auth.navSignIn')}</button>`;
-    $('#auth-open').addEventListener('click', () => openAuthModal());
+    slot.innerHTML = `<button class="btn btn--ghost btn--sm" type="button" data-auth-open>${t('auth.navSignIn')}</button>`;
+    slot.querySelector('[data-auth-open]').addEventListener('click', () => {
+      if (inMenu) closeMobileMenu();
+      openAuthModal();
+    });
   }
 }
 
@@ -528,10 +545,12 @@ async function init() {
   // Persistent-node listeners — bind synchronously, before any await,
   // so the static chrome (theme, menu, modal) is live from the first frame.
   window.addEventListener('hashchange', render);
-  $('#theme-toggle').addEventListener('click', () => {
+  const toggleTheme = () => {
     state.theme = state.theme === 'dark' ? 'light' : 'dark';
     setTheme(state.theme);
-  });
+  };
+  $('#theme-toggle').addEventListener('click', toggleTheme);
+  $('#theme-toggle-menu')?.addEventListener('click', toggleTheme);
   $$('.lang-switch__btn').forEach((b) => {
     b.addEventListener('click', () => {
       if (setLang(b.dataset.lang)) applyLanguage();
@@ -539,6 +558,9 @@ async function init() {
   });
   $('#menu-open').addEventListener('click', openMobileMenu);
   $('#menu-close').addEventListener('click', closeMobileMenu);
+  // Tapping any menu nav link must dismiss the full-screen off-canvas menu,
+  // otherwise it stays covering the freshly-routed page (mobile UX bug).
+  $$('.mobile-menu__link').forEach((a) => a.addEventListener('click', closeMobileMenu));
   $('#modal-overlay').addEventListener('click', (e) => {
     if (e.target === e.currentTarget) closeModal();
   });

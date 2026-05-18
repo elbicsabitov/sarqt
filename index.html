@@ -156,10 +156,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .header__inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:16px}
 
 /* BRAND mark — Sarqt sigil (yellow ornament + lowercase wordmark) */
-.brand{display:inline-flex;align-items:center;gap:10px;color:var(--color-text);transition:opacity var(--transition)}
+.brand{display:inline-flex;align-items:center;gap:10px;color:var(--color-text);transition:opacity var(--transition);min-width:0;flex-shrink:0}
 .brand:hover{opacity:.75;color:var(--color-text)}
 .brand__mark{width:auto;height:30px;color:var(--color-warning);flex-shrink:0}
-.brand__name{font-weight:800;font-size:1.375rem;letter-spacing:-.04em;line-height:1}
+.brand__name{font-weight:800;font-size:1.375rem;letter-spacing:-.04em;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .brand__name em{font-style:normal;color:var(--color-yellow)}
 
 /* SARQT SIGIL — inline SVG used in brand and favicon */
@@ -180,6 +180,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .icon-btn svg{width:20px;height:20px;stroke-width:2;stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .menu-btn{display:none}
 @media(max-width:900px){.menu-btn{display:grid}}
+/* Mobile: collapse header right-side controls into the off-canvas menu so
+   they never overflow / overlap the brand (iPhone XR ~414px). Header keeps
+   only brand + burger. The menu hosts lang/theme/account (see .mobile-menu). */
+@media(max-width:900px){
+  .nav__tools>.lang-switch,.nav__tools>#theme-toggle,#auth-slot{display:none}
+}
 
 /* MOBILE MENU */
 .mobile-menu{
@@ -199,6 +205,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   transition:background var(--transition),color var(--transition);
 }
 .mobile-menu__link:hover,.mobile-menu__link.is-active{background:var(--color-yellow-soft);color:var(--color-text)}
+.mobile-menu__tools{margin-top:20px;padding-top:20px;border-top:1px solid var(--color-border-light);display:flex;flex-direction:column;gap:10px}
+.mobile-menu__row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:16px 18px;border-radius:var(--radius);background:var(--color-surface-alt);color:var(--color-text);font-size:1.0625rem;font-weight:700;transition:background var(--transition),color var(--transition)}
+.mobile-menu__row:hover{background:var(--color-yellow-soft);color:var(--color-text)}
+.mobile-menu__row svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+#auth-slot-menu{display:flex;flex-direction:column;gap:10px}
+#auth-slot-menu .auth-slot__name{padding:4px 6px;font-size:1rem;font-weight:700;color:var(--color-text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#auth-slot-menu .btn{width:100%;justify-content:center;padding:16px 18px;font-size:1rem}
 
 /* BUTTONS — yellow primary (Figma «+ поделиться») */
 .btn{
@@ -267,6 +280,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .input::placeholder,.textarea::placeholder{color:var(--color-text-subtle)}
 .textarea{min-height:100px;resize:vertical}
 .input-hint{display:block;margin-top:6px;font-size:.8125rem;color:var(--color-text-muted)}
+/* date/time picker affordance — native inputs alone read as empty "прочерки";
+   a trailing calendar/clock glyph + bigger tap target signals "tap to pick". */
+.picker{position:relative;display:block}
+.picker>.input{padding-right:44px;min-height:52px;cursor:pointer}
+.picker>.picker__icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--color-text-muted);pointer-events:none}
+.picker>.picker__icon svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .radio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .radio-card{
   display:flex;flex-direction:column;align-items:flex-start;gap:4px;
@@ -292,6 +311,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .mode-tab.is-active{background:var(--color-yellow);color:var(--color-text);box-shadow:var(--shadow-sm)}
 .mode-tab__icon{font-size:1.75rem;line-height:1}
 .mode-tab__sub{font-size:.6875rem;font-weight:600;opacity:.7;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+@media(max-width:430px){
+  .mode-tabs{gap:4px;padding:5px}
+  .mode-tab{padding:12px 6px}
+  .mode-tab__icon{font-size:1.4rem}
+  .mode-tab__sub{display:none}
+}
 
 /* HERO */
 .hero{position:relative;padding:64px 0 80px;overflow:hidden;background:var(--color-yellow-200)}
@@ -478,6 +503,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   position:fixed;inset:0;z-index:300;
   background:rgba(33,33,33,.6);
   display:grid;place-items:center;padding:16px;
+  overflow-y:auto;
   opacity:0;pointer-events:none;
   transition:opacity .25s ease;
   backdrop-filter:blur(4px);
@@ -487,6 +513,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   background:var(--color-surface);
   border-radius:var(--radius-xl);
   padding:32px 28px;max-width:480px;width:100%;
+  max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;
   box-shadow:var(--shadow-lg);
   transform:translateY(20px);
   transition:transform .25s ease;
@@ -611,10 +638,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .stk__qr-fallback{margin:13px auto 0;font-size:9px;word-break:break-all;color:#616161;max-width:150px}
 .stk__foot{margin-top:10px;padding-top:9px;border-top:1px solid #EFE6D2;font-size:8.5px;line-height:1.45;color:#9A8F77}
 /* show-on-phone fullscreen */
-.sticker-fs{position:fixed;inset:0;z-index:200;background:rgba(20,18,12,.92);display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:24px}
+.sticker-fs{position:fixed;inset:0;z-index:200;background:rgba(20,18,12,.92);display:none;align-items:center;justify-content:safe center;flex-direction:column;gap:18px;padding:24px;overflow-y:auto;overscroll-behavior:contain}
 .sticker-fs.is-open{display:flex}
-.sticker-fs__close{background:#fff;border:none;border-radius:99px;padding:10px 20px;font-weight:700;cursor:pointer;font-family:inherit}
-.sticker-fs__inner{transform:scale(1.35)}
+.sticker-fs__close{background:#fff;border:none;border-radius:99px;padding:10px 20px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0}
+.sticker-fs__inner{transform:scale(1.35);transform-origin:center;flex-shrink:0}
+@media(max-width:430px){.sticker-fs__inner{transform:scale(1.05)}}
 /* print: only the seal sticker */
 #print-sticker{display:none}
 @media print{
@@ -683,6 +711,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
       <button class="lang-switch__btn" type="button" data-lang="kk">ҚАЗ</button>
       <button class="lang-switch__btn" type="button" data-lang="en">EN</button>
     </div>
+  </div>
+  <div class="mobile-menu__tools">
+    <button class="mobile-menu__row" id="theme-toggle-menu" type="button" data-i18n-aria="nav.theme" aria-label="Переключить тему">
+      <span data-i18n="nav.theme">Переключить тему</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+    <div id="auth-slot-menu" class="auth-slot auth-slot--menu"></div>
   </div>
 </div>
 
