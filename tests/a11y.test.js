@@ -19,3 +19,13 @@ describe('auth-form labels are associated with inputs (TD-062)', () => {
     });
   }
 });
+
+describe('i18n key share.modeTab.ariaLabel (TD-058)', () => {
+  for (const loc of ['ru', 'kk', 'en']) {
+    it(`exists and is a non-empty string in ${loc}`, () => {
+      const v = MESSAGES[loc]['share.modeTab.ariaLabel'];
+      expect(typeof v, `${loc}`).toBe('string');
+      expect(v.trim().length, `${loc} empty`).toBeGreaterThan(0);
+    });
+  }
+});

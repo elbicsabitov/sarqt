@@ -176,6 +176,7 @@ export const MESSAGES = {
     'share.head.lead': 'Выбери источник, заполни короткую форму с фото. После публикации соседи увидят твою еду в «Найти рядом» и позвонят напрямую.',
 
     // --- share: mode tabs ---
+    'share.modeTab.ariaLabel': 'Тип источника еды',
     'share.modeTab.restaurant': 'Ресторан / кафе',
     'share.modeTab.restaurant.sub': 'остатки к концу дня',
     'share.modeTab.event': 'Той / событие',
@@ -585,6 +586,7 @@ export const MESSAGES = {
     'share.head.lead': 'Көзін таңда, фотосы бар қысқа форманы толтыр. Жариялаған соң көршілер тамағыңды «Жақыннан табу»-да көреді де, тікелей қоңырау шалады.',
 
     // --- share: mode tabs ---
+    'share.modeTab.ariaLabel': 'Тамақ көзінің түрі',
     'share.modeTab.restaurant': 'Мейрамхана / кафе',
     'share.modeTab.restaurant.sub': 'күн соңының артығы',
     'share.modeTab.event': 'Той / оқиға',
@@ -994,6 +996,7 @@ export const MESSAGES = {
     'share.head.lead': 'Pick a source, fill in the short form with a photo. Once posted, neighbours will see your food in "Find nearby" and call you directly.',
 
     // --- share: mode tabs ---
+    'share.modeTab.ariaLabel': 'Food source type',
     'share.modeTab.restaurant': 'Restaurant / café',
     'share.modeTab.restaurant.sub': 'end-of-day leftovers',
     'share.modeTab.event': 'Toi / event',
