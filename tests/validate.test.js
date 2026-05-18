@@ -35,4 +35,11 @@ describe('validatePassword', () => {
   it('returns the i18n error key for non-ASCII', () => {
     expect(validatePassword('Пароль')).toEqual({ ok: false, error: 'err.auth.asciiPassword' });
   });
+  it('returns error shape for empty string', () => {
+    expect(validatePassword('')).toEqual({ ok: false, error: 'err.auth.asciiPassword' });
+  });
+  it('returns error shape for non-string input', () => {
+    expect(validatePassword(null)).toEqual({ ok: false, error: 'err.auth.asciiPassword' });
+    expect(validatePassword(123)).toEqual({ ok: false, error: 'err.auth.asciiPassword' });
+  });
 });
