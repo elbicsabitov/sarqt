@@ -44,3 +44,15 @@ describe('photo.js rejects with a distinguishable code (TD-061)', () => {
     expect(photo).toMatch(/function photoError\([^)]*\)\s*\{[\s\S]*?\.code\s*=/);
   });
 });
+
+describe('photo error i18n keys ×3 locales (TD-061)', () => {
+  for (const k of ['err.photo.unreadable', 'err.photo.encode', 'err.photo.heic']) {
+    for (const loc of ['ru', 'kk', 'en']) {
+      it(`${k} present & non-empty in ${loc}`, () => {
+        const v = MESSAGES[loc][k];
+        expect(typeof v, `${loc} ${k}`).toBe('string');
+        expect(v.trim().length, `${loc} ${k} empty`).toBeGreaterThan(0);
+      });
+    }
+  }
+});

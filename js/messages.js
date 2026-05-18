@@ -399,6 +399,9 @@ export const MESSAGES = {
     // --- err: offer submit ---
     'err.tooManyOffers': 'У тебя уже 10 активных публикаций — заверши или убери одну.',
     'err.photoFailed': 'Не удалось обработать фото. Выбери другое.',
+    'err.photo.unreadable': 'Не удалось открыть это фото — формат не распознан. Попробуй другое или сделай новый снимок.',
+    'err.photo.encode': 'Не удалось обработать фото. Попробуй ещё раз или выбери другое.',
+    'err.photo.heic': 'Фото в формате HEIC (iPhone) не поддерживается. На iPhone: Настройки → Камера → Форматы → «Наиболее совместимый», либо выбери фото в JPEG.',
     'verify.title': 'Подтвердите телефон',
     'verify.lead': 'Чтобы опубликовать еду, подтвердите номер — придёт SMS с кодом.',
     'verify.send': 'Отправить код',
@@ -820,6 +823,9 @@ export const MESSAGES = {
     // --- err: offer submit ---
     'err.tooManyOffers': 'Сенде қазірдің өзінде 10 белсенді жарияланым бар — біреуін аяқта немесе алып таста.',
     'err.photoFailed': 'Фотоны өңдеу мүмкін болмады. Басқасын таңда.',
+    'err.photo.unreadable': 'Бұл фотоны ашу мүмкін болмады — формат танылмады. Басқасын таңда немесе жаңа сурет түсір.',
+    'err.photo.encode': 'Фотоны өңдеу мүмкін болмады. Қайта көр немесе басқасын таңда.',
+    'err.photo.heic': 'HEIC форматындағы фото (iPhone) қолданылмайды. iPhone-да: Параметрлер → Камера → Форматтар → «Барынша үйлесімді», немесе JPEG фотосын таңда.',
     'verify.title': 'Телефонды растаңыз',
     'verify.lead': 'Тамақ жариялау үшін нөміріңізді растаңыз — SMS-код келеді.',
     'verify.send': 'Код жіберу',
@@ -1241,6 +1247,9 @@ export const MESSAGES = {
     // --- err: offer submit ---
     'err.tooManyOffers': 'You already have 10 active posts — finish or remove one.',
     'err.photoFailed': 'Could not process the photo. Pick another one.',
+    'err.photo.unreadable': 'Could not open this photo - the format was not recognised. Try another or take a new picture.',
+    'err.photo.encode': 'Could not process the photo. Try again or pick another one.',
+    'err.photo.heic': 'HEIC photos (iPhone) are not supported. On iPhone: Settings -> Camera -> Formats -> "Most Compatible", or pick a JPEG photo.',
     'verify.title': 'Verify your phone',
     'verify.lead': 'To post food, verify your number — an SMS code will arrive.',
     'verify.send': 'Send code',
