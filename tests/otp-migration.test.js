@@ -12,7 +12,7 @@ const sql = readFileSync(
 describe('0009 phone_otps migration (spec §4)', () => {
   it('creates the phone_otps table with the spec columns', () => {
     expect(sql).toMatch(/create table public\.phone_otps/);
-    for (const c of ['user_id', 'phone', 'code_hash', 'expires_at', 'attempts', 'created_at', 'consumed_at']) {
+    for (const c of ['id', 'user_id', 'phone', 'code_hash', 'expires_at', 'attempts', 'created_at', 'consumed_at']) {
       expect(sql, c).toContain(c);
     }
   });
@@ -23,5 +23,8 @@ describe('0009 phone_otps migration (spec §4)', () => {
   it('enables RLS and grants NO client policy (server-only via service role)', () => {
     expect(sql).toMatch(/alter table public\.phone_otps enable row level security/i);
     expect(sql).not.toMatch(/create policy .* on public\.phone_otps/i);
+  });
+  it('explicitly revokes all privileges from anon and authenticated (defense-in-depth)', () => {
+    expect(sql).toMatch(/revoke all on table public\.phone_otps from anon,\s*authenticated/i);
   });
 });
