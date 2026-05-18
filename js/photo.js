@@ -1,5 +1,33 @@
-// js/photo.js — ресайз изображения перед загрузкой в Storage.
-// Браузерное API (Image + canvas). Проверяется вручную в браузере.
+// js/photo.js — ресайз изображения перед загрузкой в Storage + детект HEIC.
+// resizeImage использует браузерное API (Image + canvas) — проверяется
+// вручную в браузере; ошибки реджектятся с .code для диагностики (TD-061).
+// isLikelyHeic — чистая функция, покрыта юнит-тестами.
+
+/**
+ * Ошибка обработки фото с машиночитаемым кодом.
+ * @param {'decode'|'encode'} code
+ * @param {string} message
+ * @returns {Error & {code: string}}
+ */
+function photoError(code, message) {
+  const e = new Error(message);
+  e.code = code;
+  return e;
+}
+
+/**
+ * Похоже ли, что файл — HEIC/HEIF (формат камеры iPhone, который
+ * <img>/canvas не декодируют в большинстве браузеров). Чистая проверка
+ * по MIME-типу и расширению — без чтения файла.
+ * @param {{type?: string, name?: string}|null|undefined} file
+ * @returns {boolean}
+ */
+export function isLikelyHeic(file) {
+  const type = ((file && file.type) || '').toLowerCase();
+  const name = ((file && file.name) || '').toLowerCase();
+  return type === 'image/heic' || type === 'image/heif'
+    || name.endsWith('.heic') || name.endsWith('.heif');
+}
 
 /**
  * Ужимает картинку до maxDim по большей стороне, отдаёт JPEG-Blob.
@@ -25,7 +53,7 @@ export function resizeImage(file, maxDim = 1280, quality = 0.8) {
       canvas.toBlob(
         (blob) => {
           if (blob) resolve(blob);
-          else reject(new Error('Не удалось обработать фото'));
+          else reject(photoError('encode', 'canvas encode failed'));
         },
         'image/jpeg',
         quality,
@@ -33,7 +61,7 @@ export function resizeImage(file, maxDim = 1280, quality = 0.8) {
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error('Не удалось прочитать фото'));
+      reject(photoError('decode', 'image decode failed'));
     };
     img.src = url;
   });
