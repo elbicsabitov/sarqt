@@ -15,8 +15,20 @@ describe('Edge Functions security invariants (spec §4)', () => {
     expect(send).toContain("Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')");
     expect(verify).toContain("Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')");
   });
-  it('CORS restricted to https://sarqt.kz', () => {
-    expect(read('../supabase/functions/_shared/cors.ts')).toContain("'https://sarqt.kz'");
+  it('CORS restricted to https://sarqt.kz and allows all supabase-js invoke headers (TD-067)', () => {
+    const cors = read('../supabase/functions/_shared/cors.ts');
+    expect(cors).toContain("'https://sarqt.kz'");
+    // supabase-js functions.invoke sends apikey + x-client-info beyond
+    // authorization/content-type. Omitting them fails the CORS preflight →
+    // verify.js (functions.invoke) breaks the moment Фаза-L enables it (TD-067).
+    const allow = cors
+      .match(/Access-Control-Allow-Headers'\s*:\s*'([^']+)'/)[1]
+      .toLowerCase()
+      .split(',')
+      .map((s) => s.trim());
+    for (const h of ['authorization', 'content-type', 'apikey', 'x-client-info']) {
+      expect(allow).toContain(h);
+    }
   });
   it('send-otp enforces rate limit before sending', () => {
     expect(send).toContain('withinRateLimit');
