@@ -29,6 +29,12 @@ describe('mobile header collapses (F1/F2)', () => {
   });
 });
 
+describe('home hero on mobile', () => {
+  it('decorative hero sigil is dropped <900px (desktop keeps it)', () => {
+    expect(html).toMatch(/@media\(max-width:899px\)\{\.hero__visual\{display:none\}\}/);
+  });
+});
+
 describe('menu/account JS wiring', () => {
   it('renderAuthNav fills both header and menu slots (DRY)', () => {
     expect(app).toContain('function fillAuthSlot(');
@@ -64,8 +70,8 @@ describe('share time/date pickers (F11 / TD-060)', () => {
 });
 
 describe('service worker — no HTML/JS version skew (cont #9 iOS regression)', () => {
-  it('CACHE_NAME advanced (v8)', () => {
-    expect(sw).toContain("const CACHE_NAME = 'sarqt-v8'");
+  it('CACHE_NAME advanced (v9)', () => {
+    expect(sw).toContain("const CACHE_NAME = 'sarqt-v9'");
   });
   it('app JS is network-first so fresh index.html never runs stale JS', () => {
     // Guards the root-cause fix: /js/*.js (excluding vendored libs) must NOT

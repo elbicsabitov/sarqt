@@ -345,6 +345,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   box-shadow:0 30px 80px rgba(238,194,0,.35);
 }
 .hero__sigil-big{width:62%;height:62%;color:var(--color-text);z-index:2;position:relative}
+/* Mobile: the hero sigil is a screen-tall decorative block (brand already
+   lives in the header) — drop it so the hero is tight and CTA sits high.
+   Desktop (≥900px, 2-col) keeps it. */
+@media(max-width:899px){.hero__visual{display:none}}
 
 /* SECTIONS */
 .section{padding:64px 0}
