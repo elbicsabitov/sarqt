@@ -63,8 +63,15 @@ describe('share time/date pickers (F11 / TD-060)', () => {
   });
 });
 
-describe('service worker cache busted for the new chrome', () => {
-  it('CACHE_NAME advanced past v6', () => {
-    expect(sw).toContain("const CACHE_NAME = 'sarqt-v7'");
+describe('service worker — no HTML/JS version skew (cont #9 iOS regression)', () => {
+  it('CACHE_NAME advanced (v8)', () => {
+    expect(sw).toContain("const CACHE_NAME = 'sarqt-v8'");
+  });
+  it('app JS is network-first so fresh index.html never runs stale JS', () => {
+    // Guards the root-cause fix: /js/*.js (excluding vendored libs) must NOT
+    // be served cache-first, or a deploy skews HTML vs JS again on iOS.
+    expect(sw).toMatch(/url\.pathname\.includes\('\/js\/'\)/);
+    expect(sw).toMatch(/!url\.pathname\.includes\('\/js\/vendor\/'\)/);
+    expect(sw).toMatch(/Network-first for our own app modules/);
   });
 });

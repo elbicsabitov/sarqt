@@ -1,5 +1,5 @@
 // Sarqt service worker — minimal cache-first for PWA installability + offline shell
-const CACHE_NAME = 'sarqt-v7';
+const CACHE_NAME = 'sarqt-v8';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -56,6 +56,25 @@ self.addEventListener('fetch', (event) => {
           return res;
         })
         .catch(() => caches.match(req).then((r) => r || caches.match('./index.html')))
+    );
+    return;
+  }
+  // Network-first for our own app modules (NOT vendored libs) so a freshly
+  // deployed index.html never runs against stale cached JS — the iOS
+  // SW version-skew that broke the mobile chrome in cont #9 (login/theme
+  // gone, layout off). Vendored libs are pinned/immutable → cache-first.
+  if (url.origin === location.origin
+      && url.pathname.includes('/js/')
+      && !url.pathname.includes('/js/vendor/')
+      && url.pathname.endsWith('.js')) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
+          return res;
+        })
+        .catch(() => caches.match(req))
     );
     return;
   }
