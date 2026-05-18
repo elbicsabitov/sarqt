@@ -32,4 +32,10 @@ describe('Edge Functions security invariants (spec §4)', () => {
     expect(send).toMatch(/from ['"]\.\.\/\.\.\/\.\.\/js\/otp\.js['"]/);
     expect(verify).toMatch(/from ['"]\.\.\/\.\.\/\.\.\/js\/otp\.js['"]/);
   });
+  it('errors are logged server-side, not silently swallowed (no bare catch (_e))', () => {
+    expect(send).not.toContain('catch (_e)');
+    expect(verify).not.toContain('catch (_e)');
+    expect(send).toContain("console.error('[send-otp] internal', e)");
+    expect(verify).toContain("console.error('[verify-otp] internal', e)");
+  });
 });

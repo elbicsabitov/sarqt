@@ -38,7 +38,8 @@ Deno.serve(async (req) => {
     await admin.from('phone_otps').update({ consumed_at: new Date().toISOString() }).eq('id', row.id);
     await admin.from('profiles').update({ phone_verified: true }).eq('id', u.user.id);
     return json({ ok: true });
-  } catch (_e) {
+  } catch (e) {
+    console.error('[verify-otp] internal', e);
     return json({ error: 'internal' }, 500);
   }
 });

@@ -49,7 +49,14 @@ Deno.serve(async (req) => {
       .insert({ user_id: userId, phone, code_hash: 'pending', expires_at: new Date(now + OTP_TTL_MS).toISOString() })
       .select('id').single();
     if (insErr || !row) return json({ error: 'store_failed' }, 500);
-    await admin.from('phone_otps').update({ code_hash: await hashOtp(code, row.id) }).eq('id', row.id);
+    const { error: hashErr } = await admin.from('phone_otps')
+      .update({ code_hash: await hashOtp(code, row.id) }).eq('id', row.id);
+    if (hashErr) {
+      // Dead OTP: never ship an SMS code we can't verify. Consume the row so
+      // it neither verifies nor counts against the user's rate limit on retry.
+      await admin.from('phone_otps').update({ consumed_at: new Date().toISOString() }).eq('id', row.id);
+      return json({ error: 'store_failed' }, 500);
+    }
 
     const mobizonKey = Deno.env.get('MOBIZON_API_KEY');
     if (!mobizonKey) return json({ error: 'sms_unconfigured' }, 503);
@@ -60,7 +67,8 @@ Deno.serve(async (req) => {
     );
     if (!smsRes.ok) return json({ error: 'sms_failed' }, 502);
     return json({ ok: true });
-  } catch (_e) {
+  } catch (e) {
+    console.error('[send-otp] internal', e);
     return json({ error: 'internal' }, 500);
   }
 });
