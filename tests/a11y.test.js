@@ -49,7 +49,11 @@ describe('/share mode selector is a conformant ARIA tablist (TD-058)', () => {
 
   it('the form is wrapped in a tabpanel labelled by the active tab', () => {
     expect(views).toContain(
-      '<div id="share-panel" role="tabpanel" aria-labelledby="mode-tab-${mode}">',
+      '<div id="share-panel" role="tabpanel" aria-labelledby="mode-tab-${mode}" tabindex="0">',
     );
+  });
+
+  it('the tabpanel is keyboard-focusable (tabindex=0, WAI-ARIA APG) — TD-064', () => {
+    expect(views).toMatch(/id="share-panel"[^>]*\btabindex="0"/);
   });
 });

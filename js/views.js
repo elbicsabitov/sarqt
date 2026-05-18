@@ -393,7 +393,7 @@ export function viewShare() {
               <span class="mode-tab__sub">${t('share.modeTab.home.sub')}</span>
             </button>
           </div>
-          <div id="share-panel" role="tabpanel" aria-labelledby="mode-tab-${mode}">
+          <div id="share-panel" role="tabpanel" aria-labelledby="mode-tab-${mode}" tabindex="0">
             ${renderShareForm()}
           </div>
         </div>
