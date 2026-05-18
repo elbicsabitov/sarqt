@@ -11,6 +11,23 @@ import { startPhoneVerification, confirmCode } from '../js/verify.js';
 
 beforeEach(resetMock);
 
+// Helper: build a real FunctionsHttpError-shaped error with an Edge JSON body.
+// supabase-js v2: non-2xx responses come as { name:'FunctionsHttpError',
+// message:'Edge Function returned a non-2xx status code', context: Response }.
+// The Edge JSON body ({error:'...'}) is only in error.context.json().
+function makeFunctionsHttpError(edgeErrorField) {
+  return {
+    name: 'FunctionsHttpError',
+    message: 'Edge Function returned a non-2xx status code',
+    context: { json: async () => ({ error: edgeErrorField }) },
+  };
+}
+
+// Helper: FunctionsFetchError shape (network failure — no body).
+function makeFetchError(msg = 'Failed to fetch') {
+  return { name: 'FunctionsFetchError', message: msg };
+}
+
 // ---- startPhoneVerification ----
 
 describe('startPhoneVerification', () => {
@@ -28,29 +45,39 @@ describe('startPhoneVerification', () => {
     expect(call.args[0]).toBe('send-otp');
   });
 
-  it('maps Edge rate_limited error to err.verify.rateLimited', async () => {
-    mockSupabase.__setFunctionResult('send-otp', { data: null, error: { message: 'rate_limited' } });
+  it('maps Edge rate_limited error (real FunctionsHttpError shape) to err.verify.rateLimited', async () => {
+    mockSupabase.__setFunctionResult('send-otp', {
+      data: null,
+      error: makeFunctionsHttpError('rate_limited'),
+    });
     const res = await startPhoneVerification();
     expect(res).toEqual({ ok: false, error: 'err.verify.rateLimited' });
   });
 
-  it('maps any other Edge error to err.verify.generic', async () => {
-    mockSupabase.__setFunctionResult('send-otp', { data: null, error: { message: 'internal server error' } });
+  it('maps any other Edge error (unreadable body) to err.verify.generic', async () => {
+    // context.json() throws → falls through to generic
+    const errorWithBrokenBody = {
+      name: 'FunctionsHttpError',
+      message: 'Edge Function returned a non-2xx status code',
+      context: { json: async () => { throw new Error('not json'); } },
+    };
+    mockSupabase.__setFunctionResult('send-otp', { data: null, error: errorWithBrokenBody });
     const res = await startPhoneVerification();
     expect(res).toEqual({ ok: false, error: 'err.verify.generic' });
   });
 
-  it('maps invoke/network throw to err.verify.generic', async () => {
-    // Override invoke to throw synchronously to simulate network failure
-    const orig = mockSupabase.functions.invoke;
-    mockSupabase.functions.invoke = () => Promise.reject(new Error('Failed to fetch'));
+  it('maps network/relay throw (FunctionsFetchError, no context) to err.verify.generic', async () => {
+    // FIX 4: scoped spy replaces manual monkey-patch
+    vi.spyOn(mockSupabase.functions, 'invoke').mockRejectedValueOnce(makeFetchError('Failed to fetch'));
     const res = await startPhoneVerification();
     expect(res).toEqual({ ok: false, error: 'err.verify.generic' });
-    mockSupabase.functions.invoke = orig;
   });
 
   it('returns an i18n key string, never raw user text', async () => {
-    mockSupabase.__setFunctionResult('send-otp', { data: null, error: { message: 'something unexpected' } });
+    mockSupabase.__setFunctionResult('send-otp', {
+      data: null,
+      error: makeFunctionsHttpError('something unexpected'),
+    });
     const res = await startPhoneVerification();
     expect(res.ok).toBe(false);
     expect(res.error).toMatch(/^err\./);
@@ -76,46 +103,74 @@ describe('confirmCode', () => {
     expect(call.args[1]).toEqual({ body: { code: '654321' } });
   });
 
-  it('maps Edge bad_code to err.verify.badCode', async () => {
-    mockSupabase.__setFunctionResult('verify-otp', { data: null, error: { message: 'bad_code' } });
+  it('maps Edge bad_code (real FunctionsHttpError shape) to err.verify.badCode', async () => {
+    mockSupabase.__setFunctionResult('verify-otp', {
+      data: null,
+      error: makeFunctionsHttpError('bad_code'),
+    });
     const res = await confirmCode('000000');
     expect(res).toEqual({ ok: false, error: 'err.verify.badCode' });
   });
 
-  it('maps Edge expired to err.verify.expired', async () => {
-    mockSupabase.__setFunctionResult('verify-otp', { data: null, error: { message: 'expired' } });
+  it('maps Edge expired (real FunctionsHttpError shape) to err.verify.expired', async () => {
+    mockSupabase.__setFunctionResult('verify-otp', {
+      data: null,
+      error: makeFunctionsHttpError('expired'),
+    });
     const res = await confirmCode('000000');
     expect(res).toEqual({ ok: false, error: 'err.verify.expired' });
   });
 
-  it('maps Edge locked to err.verify.rateLimited', async () => {
-    mockSupabase.__setFunctionResult('verify-otp', { data: null, error: { message: 'locked' } });
+  it('maps Edge locked (real FunctionsHttpError shape) to err.verify.rateLimited', async () => {
+    mockSupabase.__setFunctionResult('verify-otp', {
+      data: null,
+      error: makeFunctionsHttpError('locked'),
+    });
     const res = await confirmCode('000000');
     expect(res).toEqual({ ok: false, error: 'err.verify.rateLimited' });
   });
 
-  it('maps Edge rate_limited to err.verify.rateLimited', async () => {
-    mockSupabase.__setFunctionResult('verify-otp', { data: null, error: { message: 'rate_limited' } });
+  it('maps Edge rate_limited (real FunctionsHttpError shape) to err.verify.rateLimited', async () => {
+    mockSupabase.__setFunctionResult('verify-otp', {
+      data: null,
+      error: makeFunctionsHttpError('rate_limited'),
+    });
     const res = await confirmCode('000000');
     expect(res).toEqual({ ok: false, error: 'err.verify.rateLimited' });
   });
 
-  it('maps any other Edge error to err.verify.generic', async () => {
-    mockSupabase.__setFunctionResult('verify-otp', { data: null, error: { message: 'unexpected edge error' } });
+  it('maps unknown Edge error body to err.verify.generic', async () => {
+    mockSupabase.__setFunctionResult('verify-otp', {
+      data: null,
+      error: makeFunctionsHttpError('unexpected edge error'),
+    });
     const res = await confirmCode('000000');
     expect(res).toEqual({ ok: false, error: 'err.verify.generic' });
   });
 
-  it('maps invoke/network throw to err.verify.generic', async () => {
-    const orig = mockSupabase.functions.invoke;
-    mockSupabase.functions.invoke = () => Promise.reject(new Error('Network error'));
+  it('maps Edge error with unreadable body (context.json throws) to err.verify.generic', async () => {
+    const errorWithBrokenBody = {
+      name: 'FunctionsHttpError',
+      message: 'Edge Function returned a non-2xx status code',
+      context: { json: async () => { throw new Error('body already read'); } },
+    };
+    mockSupabase.__setFunctionResult('verify-otp', { data: null, error: errorWithBrokenBody });
+    const res = await confirmCode('000000');
+    expect(res).toEqual({ ok: false, error: 'err.verify.generic' });
+  });
+
+  it('maps network/relay throw (FunctionsFetchError, no context) to err.verify.generic', async () => {
+    // FIX 4: scoped spy replaces manual monkey-patch
+    vi.spyOn(mockSupabase.functions, 'invoke').mockRejectedValueOnce(makeFetchError('Network error'));
     const res = await confirmCode('123456');
     expect(res).toEqual({ ok: false, error: 'err.verify.generic' });
-    mockSupabase.functions.invoke = orig;
   });
 
   it('returns an i18n key string, never raw user text', async () => {
-    mockSupabase.__setFunctionResult('verify-otp', { data: null, error: { message: 'anything' } });
+    mockSupabase.__setFunctionResult('verify-otp', {
+      data: null,
+      error: makeFunctionsHttpError('anything'),
+    });
     const res = await confirmCode('000000');
     expect(res.ok).toBe(false);
     expect(res.error).toMatch(/^err\./);

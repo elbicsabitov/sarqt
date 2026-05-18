@@ -549,7 +549,7 @@ async function submitOffer() {
         // 2. Collect code from user (UI wiring deferred — modal/prompt stays out of scope
         //    for this dormant stub; a real prompt/modal is wired in a later Фаза-L task).
         const code = null; // placeholder — UI collection deferred to Фаза-L
-        if (!code) { showError('s-error', t('verify.codeLabel')); return; }
+        if (!code) { showError('s-error', t('err.verify.noCode')); return; }
         // 3. Confirm code.
         const confirmRes = await confirmCode(code);
         if (!confirmRes.ok) { showError('s-error', t(confirmRes.error)); return; }

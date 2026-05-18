@@ -409,6 +409,7 @@ export const MESSAGES = {
     'err.verify.badCode': 'Неверный код. Попробуйте ещё раз.',
     'err.verify.expired': 'Код истёк. Запросите новый.',
     'err.verify.generic': 'Не удалось подтвердить телефон. Попробуйте позже.',
+    'err.verify.noCode': 'Введите код из SMS.',
 
     // --- err: submit button states ---
     'err.submitting': 'Публикуем…',
@@ -829,6 +830,7 @@ export const MESSAGES = {
     'err.verify.badCode': 'Код қате. Қайта көріңіз.',
     'err.verify.expired': 'Кодтың мерзімі бітті. Жаңасын сұраңыз.',
     'err.verify.generic': 'Телефонды растау мүмкін болмады. Кейінірек көріңіз.',
+    'err.verify.noCode': 'SMS кодын енгізіңіз.',
 
     // --- err: submit button states ---
     'err.submitting': 'Жариялап жатырмыз…',
@@ -1249,6 +1251,7 @@ export const MESSAGES = {
     'err.verify.badCode': 'Wrong code. Try again.',
     'err.verify.expired': 'The code expired. Request a new one.',
     'err.verify.generic': 'Could not verify the phone. Try again later.',
+    'err.verify.noCode': 'Enter the SMS code.',
 
     // --- err: submit button states ---
     'err.submitting': 'Posting…',
