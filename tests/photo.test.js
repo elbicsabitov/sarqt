@@ -56,3 +56,24 @@ describe('photo error i18n keys ×3 locales (TD-061)', () => {
     }
   }
 });
+
+describe('app.js photo failure is no longer silent (TD-061)', () => {
+  const app = read('../js/app.js');
+  it('imports isLikelyHeic from photo.js', () => {
+    expect(app).toContain("import { resizeImage, isLikelyHeic } from './photo.js'");
+  });
+  it('preempts HEIC before resize with the specific message', () => {
+    expect(app).toContain('isLikelyHeic(s.photoFile)');
+    expect(app).toContain("t('err.photo.heic')");
+  });
+  it('logs the real error + file metadata (no silent failure)', () => {
+    expect(app).toMatch(/console\.warn\('\[sarqt\] photo failed:',\s*e,/);
+  });
+  it('maps error code to a specific message, generic only as fallback', () => {
+    expect(app).toContain("e.code === 'decode'");
+    expect(app).toContain("'err.photo.unreadable'");
+    expect(app).toContain("e.code === 'encode'");
+    expect(app).toContain("'err.photo.encode'");
+    expect(app).toContain("'err.photoFailed'");
+  });
+});

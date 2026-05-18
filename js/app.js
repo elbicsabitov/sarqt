@@ -8,7 +8,7 @@ import { renderShareForm, renderOfferCard, renderOfferDetail, renderOfferGone } 
 import { REGIONS, PHONE_VERIFY_ENABLED } from './config.js';
 import { startPhoneVerification, confirmCode } from './verify.js';
 import { validateOffer, computeExpiresAt, telHref, isUuid } from './offers.js';
-import { resizeImage } from './photo.js';
+import { resizeImage, isLikelyHeic } from './photo.js';
 import { signUp, signIn, signOut, currentUser, currentProfile, onAuthChange } from './auth.js';
 import { validatePassword } from './validate.js';
 import {
@@ -523,8 +523,19 @@ async function submitOffer() {
       return;
     }
     let blob;
+    if (isLikelyHeic(s.photoFile)) {
+      console.warn('[sarqt] photo HEIC preempt:', { name: s.photoFile.name, type: s.photoFile.type, size: s.photoFile.size });
+      showError('s-error', t('err.photo.heic')); return;
+    }
     try { blob = await resizeImage(s.photoFile); }
-    catch (e) { showError('s-error', t('err.photoFailed')); return; }
+    catch (e) {
+      console.warn('[sarqt] photo failed:', e, { name: s.photoFile.name, type: s.photoFile.type, size: s.photoFile.size });
+      const key = e && e.code === 'decode' ? 'err.photo.unreadable'
+        : e && e.code === 'encode' ? 'err.photo.encode'
+        : 'err.photoFailed';
+      showError('s-error', t(key));
+      return;
+    }
     const up = await uploadPhoto(blob, state.user.id);
     if (!up.ok) { showError('s-error', t(up.error)); return; }
     const res = await createOffer({
