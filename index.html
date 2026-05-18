@@ -280,6 +280,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .input::placeholder,.textarea::placeholder{color:var(--color-text-subtle)}
 .textarea{min-height:100px;resize:vertical}
 .input-hint{display:block;margin-top:6px;font-size:.8125rem;color:var(--color-text-muted)}
+.pw-field{position:relative}
+.pw-field>.input{padding-right:46px}
+.pw-toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:transparent;color:var(--color-text-muted);cursor:pointer;transition:background var(--transition),color var(--transition)}
+.pw-toggle:hover{background:var(--color-yellow-soft);color:var(--color-text)}
+.pw-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 /* date/time picker affordance — native inputs alone read as empty "прочерки";
    a trailing calendar/clock glyph + bigger tap target signals "tap to pick". */
 .picker{position:relative;display:block}

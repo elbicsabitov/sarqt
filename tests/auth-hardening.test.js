@@ -24,3 +24,18 @@ describe('submitAuth password gate (Task 3)', () => {
     expect(guard).toBeLessThan(signin);
   });
 });
+
+describe('show/hide-password toggle (Task 4)', () => {
+  it('modal markup wraps the password input with a toggle button', () => {
+    expect(app).toContain('class="pw-field"');
+    expect(app).toContain('id="auth-pw-toggle"');
+    expect(app).toContain("t('auth.showPassword')");
+  });
+  it('toggle handler is wired in draw()', () => {
+    expect(app).toMatch(/#auth-pw-toggle'\)\.addEventListener\('click'/);
+  });
+  it('index.html styles the toggle with existing tokens', () => {
+    const html = readFileSync(fileURLToPath(new URL('../index.html', import.meta.url)), 'utf8');
+    expect(html).toMatch(/\.pw-toggle\{[^}]*position:absolute/);
+  });
+});
