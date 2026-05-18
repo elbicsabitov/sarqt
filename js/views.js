@@ -379,21 +379,23 @@ export function viewShare() {
         </div>
         ${guestNotice}
         <div class="card card--feature" style="max-width:760px;margin:0 auto">
-          <div class="mode-tabs" role="tablist">
-            <button class="mode-tab ${mode === 'restaurant' ? 'is-active' : ''}" data-mode="restaurant" role="tab" aria-selected="${mode === 'restaurant'}">
+          <div class="mode-tabs" role="tablist" aria-label="${t('share.modeTab.ariaLabel')}">
+            <button class="mode-tab ${mode === 'restaurant' ? 'is-active' : ''}" data-mode="restaurant" id="mode-tab-restaurant" role="tab" aria-selected="${mode === 'restaurant'}" aria-controls="share-panel">
               <span class="mode-tab__icon">🍽️</span><span>${t('share.modeTab.restaurant')}</span>
               <span class="mode-tab__sub">${t('share.modeTab.restaurant.sub')}</span>
             </button>
-            <button class="mode-tab ${mode === 'event' ? 'is-active' : ''}" data-mode="event" role="tab" aria-selected="${mode === 'event'}">
+            <button class="mode-tab ${mode === 'event' ? 'is-active' : ''}" data-mode="event" id="mode-tab-event" role="tab" aria-selected="${mode === 'event'}" aria-controls="share-panel">
               <span class="mode-tab__icon">🎉</span><span>${t('share.modeTab.event')}</span>
               <span class="mode-tab__sub">${t('share.modeTab.event.sub')}</span>
             </button>
-            <button class="mode-tab ${mode === 'home' ? 'is-active' : ''}" data-mode="home" role="tab" aria-selected="${mode === 'home'}">
+            <button class="mode-tab ${mode === 'home' ? 'is-active' : ''}" data-mode="home" id="mode-tab-home" role="tab" aria-selected="${mode === 'home'}" aria-controls="share-panel">
               <span class="mode-tab__icon">🏠</span><span>${t('share.modeTab.home')}</span>
               <span class="mode-tab__sub">${t('share.modeTab.home.sub')}</span>
             </button>
           </div>
-          ${renderShareForm()}
+          <div id="share-panel" role="tabpanel" aria-labelledby="mode-tab-${mode}">
+            ${renderShareForm()}
+          </div>
         </div>
         <div class="text-center mt-12" style="font-size:.875rem;color:var(--color-text-muted);max-width:720px;margin:0 auto">
           ${t('share.safety')}

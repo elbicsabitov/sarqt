@@ -29,3 +29,27 @@ describe('i18n key share.modeTab.ariaLabel (TD-058)', () => {
     });
   }
 });
+
+describe('/share mode selector is a conformant ARIA tablist (TD-058)', () => {
+  const views = read('../js/views.js');
+
+  it('tablist has an accessible name', () => {
+    expect(views).toContain(
+      `<div class="mode-tabs" role="tablist" aria-label="\${t('share.modeTab.ariaLabel')}">`,
+    );
+  });
+
+  for (const m of ['restaurant', 'event', 'home']) {
+    it(`tab ${m} has a stable id and controls the panel`, () => {
+      expect(views).toContain(
+        `data-mode="${m}" id="mode-tab-${m}" role="tab" aria-selected="\${mode === '${m}'}" aria-controls="share-panel"`,
+      );
+    });
+  }
+
+  it('the form is wrapped in a tabpanel labelled by the active tab', () => {
+    expect(views).toContain(
+      '<div id="share-panel" role="tabpanel" aria-labelledby="mode-tab-${mode}">',
+    );
+  });
+});
