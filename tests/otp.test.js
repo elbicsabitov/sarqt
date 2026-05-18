@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { generateOtp, hashOtp, verifyOtpHash, isOtpExpired, attemptsExhausted, withinRateLimit } from '../js/otp.js';
+import { MESSAGES } from '../js/messages.js';
 
 describe('generateOtp', () => {
   it('is a 6-digit numeric string, zero-padded', () => {
@@ -41,4 +42,15 @@ describe('withinRateLimit', () => {
     expect(withinRateLimit({ last10min: 0, last24h: 6, globalToday: 1, globalCap: 500 })).toBe(false);
     expect(withinRateLimit({ last10min: 0, last24h: 0, globalToday: 500, globalCap: 500 })).toBe(false);
   });
+});
+describe('phone-verify i18n keys ×3 (spec §4)', () => {
+  const KEYS = ['verify.title','verify.lead','verify.send','verify.codeLabel','verify.confirm',
+    'verify.sent','err.verify.rateLimited','err.verify.badCode','err.verify.expired','err.verify.generic'];
+  for (const k of KEYS) for (const loc of ['ru','kk','en']) {
+    it(`${k} in ${loc}`, () => {
+      const v = MESSAGES[loc][k];
+      expect(typeof v, `${loc} ${k}`).toBe('string');
+      expect(v.trim().length, `${loc} ${k}`).toBeGreaterThan(0);
+    });
+  }
 });
