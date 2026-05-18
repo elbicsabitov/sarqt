@@ -70,8 +70,8 @@ describe('share time/date pickers (F11 / TD-060)', () => {
 });
 
 describe('service worker — no HTML/JS version skew (cont #9 iOS regression)', () => {
-  it('CACHE_NAME advanced (v9)', () => {
-    expect(sw).toContain("const CACHE_NAME = 'sarqt-v9'");
+  it('CACHE_NAME advanced (v10)', () => {
+    expect(sw).toContain("const CACHE_NAME = 'sarqt-v10'");
   });
   it('app JS is network-first so fresh index.html never runs stale JS', () => {
     // Guards the root-cause fix: /js/*.js (excluding vendored libs) must NOT
