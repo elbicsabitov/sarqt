@@ -5,7 +5,8 @@ import { $, $$, escape, showModal, closeModal, setTheme, openMobileMenu, closeMo
 import { t, getLang, setLang, initLang } from './i18n.js';
 import { render, setAfterRender } from './router.js';
 import { renderShareForm, renderOfferCard, renderOfferDetail, renderOfferGone } from './views.js';
-import { REGIONS } from './config.js';
+import { REGIONS, PHONE_VERIFY_ENABLED } from './config.js';
+import { startPhoneVerification, confirmCode } from './verify.js';
 import { validateOffer, computeExpiresAt, telHref, isUuid } from './offers.js';
 import { resizeImage } from './photo.js';
 import { signUp, signIn, signOut, currentUser, currentProfile, onAuthChange } from './auth.js';
@@ -536,7 +537,29 @@ async function submitOffer() {
       contact_phone: s.contact_phone.trim(), contact_tg: s.contact_tg.trim() || null,
       status: 'active',
     });
-    if (!res.ok) { showError('s-error', t(res.error)); return; }
+    if (!res.ok) {
+      // --- DORMANT Фаза-L hook (unreachable until PHONE_VERIFY_ENABLED=true + RLS flip) ---
+      // When the offers INSERT RLS policy gains the identity_verified condition, an
+      // unverified user's insert will be rejected with the identity-RLS shape (forbidden).
+      // The flag stays false until then, so this branch is never entered in prod.
+      if (PHONE_VERIFY_ENABLED && res.error === 'err.db.forbidden') {
+        // 1. Trigger SMS send via send-otp Edge Function.
+        const sendRes = await startPhoneVerification();
+        if (!sendRes.ok) { showError('s-error', t(sendRes.error)); return; }
+        // 2. Collect code from user (UI wiring deferred — modal/prompt stays out of scope
+        //    for this dormant stub; a real prompt/modal is wired in a later Фаза-L task).
+        const code = null; // placeholder — UI collection deferred to Фаза-L
+        if (!code) { showError('s-error', t('verify.codeLabel')); return; }
+        // 3. Confirm code.
+        const confirmRes = await confirmCode(code);
+        if (!confirmRes.ok) { showError('s-error', t(confirmRes.error)); return; }
+        // 4. Retry the offer insert (identity now verified, RLS should pass).
+        // (retry logic deferred to Фаза-L — flag keeps this unreachable)
+        return;
+      }
+      // --- end DORMANT hook ---
+      showError('s-error', t(res.error)); return;
+    }
     state.share = seededShare(freshShare(s.mode), state.profile);
     state.justPublished = true;
     location.hash = '#/o/' + res.offer.id;

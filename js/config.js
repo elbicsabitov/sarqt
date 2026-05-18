@@ -20,6 +20,11 @@ export const EXPIRY_BUCKETS = [
   { key: 'exact', labelKey: 'expiry.exact' },
 ];
 
+// Phone-verify feature flag. Stays false until the Фаза-L RLS flip (owner activation):
+// the offers INSERT policy gains the identity_verified condition, and this flag is flipped
+// to true so the dormant hook in app.js submitOffer becomes reachable.
+export const PHONE_VERIFY_ENABLED = false;
+
 // Типы события для режима «Той» формы публикации.
 // value — каноническое значение (пишется в offers.event_type, НЕ менять —
 // иначе расходятся существующие строки БД); labelKey — ключ i18n для лейбла.

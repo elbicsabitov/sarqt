@@ -9,6 +9,7 @@ function build() {
     queryResult: { data: null, error: null },
     authResults: {},
     storageResults: {},
+    functionResults: {},
     authChangeCb: null,
   };
   const record = (scope, method, args) => state.calls.push({ scope, method, args });
@@ -57,6 +58,12 @@ function build() {
         return { data: { subscription: { unsubscribe() {} } } };
       },
     },
+    functions: {
+      invoke(name, opts) {
+        record('functions', 'invoke', [name, opts]);
+        return Promise.resolve(state.functionResults[name] ?? { data: null, error: null });
+      },
+    },
     storage: {
       from(bucket) {
         record('storage', 'from', [bucket]);
@@ -76,6 +83,7 @@ function build() {
     __setQueryResult(r) { state.queryResult = r; },
     __setAuthResult(method, r) { state.authResults[method] = r; },
     __setStorageResult(method, r) { state.storageResults[method] = r; },
+    __setFunctionResult(name, r) { state.functionResults[name] = r; },
     __calls() { return state.calls; },
     __fireAuthChange(event, session) { if (state.authChangeCb) state.authChangeCb(event, session); },
     __reset() {
@@ -83,6 +91,7 @@ function build() {
       state.queryResult = { data: null, error: null };
       state.authResults = {};
       state.storageResults = {};
+      state.functionResults = {};
       state.authChangeCb = null;
     },
   };
