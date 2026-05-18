@@ -124,19 +124,19 @@ function openAuthModal(onSuccess) {
       <button class="modal__close" id="modal-close" aria-label="${t('auth.closeAria')}">✕</button>
       <h2 class="modal__title">${isReg ? t('auth.registerTitle') : t('auth.loginTitle')}</h2>
       <p class="modal__body">${isReg ? t('auth.registerBody') : t('auth.loginBody')}</p>
-      <div class="form-group"><label class="label">${t('auth.email')}</label>
+      <div class="form-group"><label class="label" for="auth-email">${t('auth.email')}</label>
         <input type="email" class="input" id="auth-email"></div>
-      <div class="form-group"><label class="label">${t('auth.password')}</label>
+      <div class="form-group"><label class="label" for="auth-password">${t('auth.password')}</label>
         <div class="pw-field">
           <input type="password" class="input" id="auth-password" autocomplete="${isReg ? 'new-password' : 'current-password'}">
           <button type="button" class="pw-toggle" id="auth-pw-toggle" aria-pressed="false" aria-label="${t('auth.showPassword')}">${ICONS.eye}</button>
         </div></div>
       ${isReg ? `
-        <div class="form-group"><label class="label">${t('auth.name')}</label>
+        <div class="form-group"><label class="label" for="auth-name">${t('auth.name')}</label>
           <input type="text" class="input" id="auth-name"></div>
-        <div class="form-group"><label class="label">${t('auth.phone')}</label>
+        <div class="form-group"><label class="label" for="auth-phone">${t('auth.phone')}</label>
           <input type="tel" class="input" id="auth-phone"></div>
-        <div class="form-group"><label class="label">${t('auth.region')}</label>
+        <div class="form-group"><label class="label" for="auth-region">${t('auth.region')}</label>
           <select class="select" id="auth-region"><option value="">${t('auth.regionPlaceholder')}</option>
           ${REGIONS.map((r) => `<option value="${escape(r)}">${escape(r)}</option>`).join('')}</select></div>
       ` : ''}
