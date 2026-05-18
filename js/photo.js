@@ -25,7 +25,7 @@ function photoError(code, message) {
 export function isLikelyHeic(file) {
   const type = ((file && file.type) || '').toLowerCase();
   const name = ((file && file.name) || '').toLowerCase();
-  return type === 'image/heic' || type === 'image/heif'
+  return type.startsWith('image/heic') || type.startsWith('image/heif')
     || name.endsWith('.heic') || name.endsWith('.heif');
 }
 

@@ -13,9 +13,11 @@ const read = (p) => readFileSync(fileURLToPath(new URL(p, import.meta.url)), 'ut
 const photo = read('../js/photo.js');
 
 describe('isLikelyHeic (TD-061)', () => {
-  it('true for image/heic and image/heif MIME', () => {
+  it('true for image/heic and image/heif MIME (incl. -sequence variants)', () => {
     expect(isLikelyHeic({ type: 'image/heic', name: 'IMG_1.JPG' })).toBe(true);
     expect(isLikelyHeic({ type: 'image/heif', name: '' })).toBe(true);
+    expect(isLikelyHeic({ type: 'image/heic-sequence', name: '' })).toBe(true);
+    expect(isLikelyHeic({ type: 'image/heif-sequence', name: '' })).toBe(true);
   });
   it('true for .heic/.heif filename regardless of case or empty type', () => {
     expect(isLikelyHeic({ type: '', name: 'IMG_1234.HEIC' })).toBe(true);
