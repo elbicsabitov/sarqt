@@ -1,7 +1,7 @@
 // js/app.js — entry module: init, auth lifecycle, event binding, data
 // hydration, form handlers, auth UI. The only <script> index.html loads.
 import { state, freshShare, seededShare } from './state.js';
-import { $, $$, escape, showModal, closeModal, setTheme, openMobileMenu, closeMobileMenu, modalCaptureOpener, modalFocusOn, isMobileDevice } from './ui.js';
+import { $, $$, escape, showModal, closeModal, setTheme, openMobileMenu, closeMobileMenu, modalCaptureOpener, modalFocusOn, isMobileDevice, ICONS } from './ui.js';
 import { t, getLang, setLang, initLang } from './i18n.js';
 import { render, setAfterRender } from './router.js';
 import { renderShareForm, renderOfferCard, renderOfferDetail, renderOfferGone } from './views.js';
@@ -10,7 +10,6 @@ import { validateOffer, computeExpiresAt, telHref, isUuid } from './offers.js';
 import { resizeImage } from './photo.js';
 import { signUp, signIn, signOut, currentUser, currentProfile, onAuthChange } from './auth.js';
 import { validatePassword } from './validate.js';
-const EYE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
 import {
   uploadPhoto, createOffer, markTaken, removeOffer, getOfferContact,
   listActiveOffers, listMyOffers, listLedger, getOfferById,
@@ -130,7 +129,7 @@ function openAuthModal(onSuccess) {
       <div class="form-group"><label class="label">${t('auth.password')}</label>
         <div class="pw-field">
           <input type="password" class="input" id="auth-password" autocomplete="${isReg ? 'new-password' : 'current-password'}">
-          <button type="button" class="pw-toggle" id="auth-pw-toggle" aria-pressed="false" aria-label="${t('auth.showPassword')}">${EYE_SVG}</button>
+          <button type="button" class="pw-toggle" id="auth-pw-toggle" aria-pressed="false" aria-label="${t('auth.showPassword')}">${ICONS.eye}</button>
         </div></div>
       ${isReg ? `
         <div class="form-group"><label class="label">${t('auth.name')}</label>
@@ -150,13 +149,13 @@ function openAuthModal(onSuccess) {
     $('#modal-close').addEventListener('click', closeModal);
     $('#auth-toggle').addEventListener('click', (e) => { e.preventDefault(); mode = isReg ? 'login' : 'register'; draw(); });
     $('#auth-submit').addEventListener('click', () => submitAuth(mode, onSuccess));
-    $('#auth-pw-toggle').addEventListener('click', () => {
+    $('#auth-pw-toggle').addEventListener('click', (e) => {
       const inp = $('#auth-password');
+      const btn = e.currentTarget;
       const show = inp.type === 'password';
       inp.type = show ? 'text' : 'password';
-      const b = $('#auth-pw-toggle');
-      b.setAttribute('aria-pressed', String(show));
-      b.setAttribute('aria-label', t(show ? 'auth.hidePassword' : 'auth.showPassword'));
+      btn.setAttribute('aria-pressed', String(show));
+      btn.setAttribute('aria-label', t(show ? 'auth.hidePassword' : 'auth.showPassword'));
     });
     modalFocusOn();
   };

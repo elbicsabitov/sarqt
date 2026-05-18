@@ -36,6 +36,6 @@ describe('show/hide-password toggle (Task 4)', () => {
   });
   it('index.html styles the toggle with existing tokens', () => {
     const html = readFileSync(fileURLToPath(new URL('../index.html', import.meta.url)), 'utf8');
-    expect(html).toMatch(/\.pw-toggle\{[^}]*position:absolute/);
+    expect(html).toMatch(/\.pw-toggle\{[^}]*position:absolute|\.pw-field>\.pw-toggle\{[^}]*position:absolute/);
   });
 });
