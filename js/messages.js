@@ -381,6 +381,7 @@ export const MESSAGES = {
 
     // --- err: auth (auth.js authMessage — возвращает ключ) ---
     'err.auth.badCredentials': 'Неверная почта или пароль',
+    'err.auth.asciiPassword': 'Пароль — только латиница (английская раскладка), цифры и символы',
     'err.auth.emailTaken': 'Эта почта уже зарегистрирована',
     'err.auth.weakPassword': 'Пароль слишком короткий — минимум 6 символов',
     'err.auth.badEmail': 'Проверь формат почты',
@@ -411,6 +412,8 @@ export const MESSAGES = {
     'auth.navProfile': 'Профиль',
     'auth.navSignOut': 'Выйти',
     'auth.navSignIn': 'Войти',
+    'auth.showPassword': 'Показать пароль',
+    'auth.hidePassword': 'Скрыть пароль',
   },
   kk: {
     // --- meta (translateMeta() обновляет <title> и meta-теги) ---
@@ -787,6 +790,7 @@ export const MESSAGES = {
 
     // --- err: auth (auth.js authMessage — возвращает ключ) ---
     'err.auth.badCredentials': 'Пошта немесе құпиясөз қате',
+    'err.auth.asciiPassword': 'Құпиясөз тек латын әріптері (ағылшын орналасуы), сандар мен таңбалар',
     'err.auth.emailTaken': 'Бұл пошта тіркеліп қойған',
     'err.auth.weakPassword': 'Құпиясөз тым қысқа — кемінде 6 таңба',
     'err.auth.badEmail': 'Пошта пішімін тексер',
@@ -817,6 +821,8 @@ export const MESSAGES = {
     'auth.navProfile': 'Профиль',
     'auth.navSignOut': 'Шығу',
     'auth.navSignIn': 'Кіру',
+    'auth.showPassword': 'Құпиясөзді көрсету',
+    'auth.hidePassword': 'Құпиясөзді жасыру',
   },
   en: {
     // --- meta (translateMeta() обновляет <title> и meta-теги) ---
@@ -1193,6 +1199,7 @@ export const MESSAGES = {
 
     // --- err: auth (auth.js authMessage — возвращает ключ) ---
     'err.auth.badCredentials': 'Wrong email or password',
+    'err.auth.asciiPassword': 'Password must use Latin letters (English layout), digits and symbols only',
     'err.auth.emailTaken': 'This email is already registered',
     'err.auth.weakPassword': 'The password is too short — at least 6 characters',
     'err.auth.badEmail': 'Check the email format',
@@ -1223,5 +1230,7 @@ export const MESSAGES = {
     'auth.navProfile': 'Profile',
     'auth.navSignOut': 'Sign out',
     'auth.navSignIn': 'Sign in',
+    'auth.showPassword': 'Show password',
+    'auth.hidePassword': 'Hide password',
   },
 };
