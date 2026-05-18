@@ -22,13 +22,22 @@ describe('Edge Functions security invariants (spec §4)', () => {
     expect(send).toContain('withinRateLimit');
     expect(send).toMatch(/429/);
   });
-  it('send-otp defaults to Mobizon test-mode and never silently passes a rejected send', () => {
+  it('send-otp defaults to test-mode (skips Mobizon dispatch before any fetch) and never silently passes a rejected real send', () => {
     expect(send).toContain("Deno.env.get('MOBIZON_TEST_MODE')");
-    expect(send).toContain("'params[test]'");
-    // default-safe: real send only when explicitly opted out
+    // default-safe: real send only when explicitly opted out with '0'
     expect(send).toMatch(/MOBIZON_TEST_MODE'\)\s*!==\s*'0'/);
-    // result is inspected, not assumed: success requires Mobizon code 0
+    // test-mode returns BEFORE any Mobizon fetch (guaranteed zero side-effect)
+    const testIdx = send.indexOf('if (testMode)');
+    const fetchIdx = send.indexOf('await fetch(');
+    expect(testIdx).toBeGreaterThan(-1);
+    expect(fetchIdx).toBeGreaterThan(testIdx);
+    expect(send).toMatch(/test-mode:[^\n]*skipped/);
+    // params[test] (unverified vendor flag) must be gone
+    expect(send).not.toContain("'params[test]'");
+    // real path: result inspected, not assumed; dead row consumed on failure
     expect(send).toMatch(/\.code\s*!==\s*0/);
+    expect(send).toMatch(/sms-rejected/);
+    expect(send).toMatch(/consumed_at:[\s\S]{0,80}eq\('id', row\.id\)/);
     expect(send).not.toMatch(/console\.(log|error|warn)\([^)]*MOBIZON/);
   });
   it('verify-otp checks expiry + attempts + hash and sets phone_verified', () => {

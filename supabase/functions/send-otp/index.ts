@@ -58,25 +58,34 @@ Deno.serve(async (req) => {
       return json({ error: 'store_failed' }, 500);
     }
 
+    // Default-safe: real send ONLY when explicitly opted out (MOBIZON_TEST_MODE=0).
+    // Unset / anything-but-'0' → test-mode.
+    const testMode = Deno.env.get('MOBIZON_TEST_MODE') !== '0';
+    if (testMode) {
+      // Test-mode skips the Mobizon dispatch entirely → guaranteed zero delivery,
+      // zero charge, no approved alpha-name needed. Everything above (JWT,
+      // rate-limit, OTP insert+hash via ../_shared/otp.js) still ran, so this
+      // exercises the deploy/bundle path (TD-065). No verifiable code is sent.
+      console.log('[send-otp] test-mode: SMS dispatch skipped');
+      return json({ ok: true, test: true });
+    }
     const mobizonKey = Deno.env.get('MOBIZON_API_KEY');
     if (!mobizonKey) return json({ error: 'sms_unconfigured' }, 503);
-    // Default-safe: test-mode unless explicitly opted out with MOBIZON_TEST_MODE=0.
-    // params[test]=1 → Mobizon validates auth/format fully but does NOT deliver
-    // or charge, and no approved alpha-name is required (respects their limits/rules).
-    const testMode = Deno.env.get('MOBIZON_TEST_MODE') !== '0';
-    const smsBody = new URLSearchParams({ recipient: phone, text: `sarqt: код ${code}` });
-    if (testMode) smsBody.set('params[test]', '1');
     const smsRes = await fetch(
       `https://api.mobizon.kz/service/message/sendsmsmessage?apiKey=${mobizonKey}&output=json`,
-      { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: smsBody },
+      { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ recipient: phone, text: `sarqt: код ${code}` }) },
     );
     const smsJson = await smsRes.json().catch(() => null) as { code?: number; message?: string } | null;
     if (!smsRes.ok || !smsJson || smsJson.code !== 0) {
-      // No silent pass: surface a rejected send (CLAUDE.md §6.4). Never log the key.
+      // No silent pass (CLAUDE.md §6.4). Consume the dead OTP row so it can't be
+      // verified later — consistent with the hashErr cleanup above. Never log the key.
+      await admin.from('phone_otps')
+        .update({ consumed_at: new Date().toISOString() }).eq('id', row.id);
       console.error('[send-otp] sms-rejected', smsRes.status, smsJson?.code, smsJson?.message);
       return json({ error: 'sms_failed' }, 502);
     }
-    return json({ ok: true, test: testMode });
+    return json({ ok: true });
   } catch (e) {
     console.error('[send-otp] internal', e);
     return json({ error: 'internal' }, 500);
