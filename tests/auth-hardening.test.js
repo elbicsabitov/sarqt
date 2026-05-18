@@ -15,7 +15,7 @@ describe('submitAuth password gate (Task 3)', () => {
   it('runs validatePassword and bails before signUp/signIn', () => {
     const s = app.indexOf('async function submitAuth');
     expect(s).toBeGreaterThan(-1);
-    const body = app.slice(s, s + 1200);
+    const body = app.slice(s); // whole submitAuth body — no brittle fixed window
     const guard = body.indexOf('validatePassword(password)');
     const signup = body.indexOf('signUp(');
     const signin = body.indexOf('signIn(');
