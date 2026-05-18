@@ -37,3 +37,41 @@ describe('MESSAGES.kk', () => {
     }
   });
 });
+
+// tests/messages.test.js — (cont) TD-063 value-snapshot guard. messages.test
+// parity sorts keys so it catches a dropped/added key but NOT a value
+// swapped between two existing keys during the regroup line-moves. Pin the
+// exact values of the moved/anchor keys ×3 so the refactor cannot corrupt
+// them. Cosmetic *position* is verified by the spec reviewer reading source.
+describe('TD-063 regroup keeps auth values byte-exact (×3 locales)', () => {
+  const EXPECT = {
+    ru: {
+      'auth.password': 'Пароль',
+      'auth.showPassword': 'Показать пароль',
+      'auth.hidePassword': 'Скрыть пароль',
+      'err.auth.weakPassword': 'Пароль слишком короткий — минимум 6 символов',
+      'err.auth.asciiPassword': 'Пароль — только латиница (английская раскладка), цифры и символы',
+    },
+    kk: {
+      'auth.password': 'Құпиясөз',
+      'auth.showPassword': 'Құпиясөзді көрсету',
+      'auth.hidePassword': 'Құпиясөзді жасыру',
+      'err.auth.weakPassword': 'Құпиясөз тым қысқа — кемінде 6 таңба',
+      'err.auth.asciiPassword': 'Құпиясөз тек латын әріптері (ағылшын орналасуы), сандар мен таңбалар',
+    },
+    en: {
+      'auth.password': 'Password',
+      'auth.showPassword': 'Show password',
+      'auth.hidePassword': 'Hide password',
+      'err.auth.weakPassword': 'The password is too short — at least 6 characters',
+      'err.auth.asciiPassword': 'Password must use Latin letters (English layout), digits and symbols only',
+    },
+  };
+  for (const [loc, pairs] of Object.entries(EXPECT)) {
+    for (const [k, v] of Object.entries(pairs)) {
+      it(`${loc} ${k} value unchanged`, () => {
+        expect(MESSAGES[loc][k]).toBe(v);
+      });
+    }
+  }
+});

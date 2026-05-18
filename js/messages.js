@@ -334,6 +334,8 @@ export const MESSAGES = {
     'auth.registerBody': 'Аккаунт нужен только чтобы публиковать еду — за неё отвечает хозяин. Смотреть и звонить можно без входа.',
     'auth.email': 'Почта',
     'auth.password': 'Пароль',
+    'auth.showPassword': 'Показать пароль',
+    'auth.hidePassword': 'Скрыть пароль',
     'auth.name': 'Имя',
     'auth.phone': 'Телефон',
     'auth.region': 'Район',
@@ -382,9 +384,9 @@ export const MESSAGES = {
 
     // --- err: auth (auth.js authMessage — возвращает ключ) ---
     'err.auth.badCredentials': 'Неверная почта или пароль',
-    'err.auth.asciiPassword': 'Пароль — только латиница (английская раскладка), цифры и символы',
     'err.auth.emailTaken': 'Эта почта уже зарегистрирована',
     'err.auth.weakPassword': 'Пароль слишком короткий — минимум 6 символов',
+    'err.auth.asciiPassword': 'Пароль — только латиница (английская раскладка), цифры и символы',
     'err.auth.badEmail': 'Проверь формат почты',
     'err.auth.notConfirmed': 'Почта ещё не подтверждена',
     'err.auth.generic': 'Не удалось выполнить запрос. Попробуй ещё раз',
@@ -427,8 +429,6 @@ export const MESSAGES = {
     'auth.navProfile': 'Профиль',
     'auth.navSignOut': 'Выйти',
     'auth.navSignIn': 'Войти',
-    'auth.showPassword': 'Показать пароль',
-    'auth.hidePassword': 'Скрыть пароль',
   },
   kk: {
     // --- meta (translateMeta() обновляет <title> и meta-теги) ---
@@ -758,6 +758,8 @@ export const MESSAGES = {
     'auth.registerBody': 'Аккаунт тек тамақ жариялау үшін керек — оған иесі жауапты. Қарау мен қоңырау шалуды кірмей-ақ жасауға болады.',
     'auth.email': 'Пошта',
     'auth.password': 'Құпиясөз',
+    'auth.showPassword': 'Құпиясөзді көрсету',
+    'auth.hidePassword': 'Құпиясөзді жасыру',
     'auth.name': 'Есім',
     'auth.phone': 'Телефон',
     'auth.region': 'Аудан',
@@ -806,9 +808,9 @@ export const MESSAGES = {
 
     // --- err: auth (auth.js authMessage — возвращает ключ) ---
     'err.auth.badCredentials': 'Пошта немесе құпиясөз қате',
-    'err.auth.asciiPassword': 'Құпиясөз тек латын әріптері (ағылшын орналасуы), сандар мен таңбалар',
     'err.auth.emailTaken': 'Бұл пошта тіркеліп қойған',
     'err.auth.weakPassword': 'Құпиясөз тым қысқа — кемінде 6 таңба',
+    'err.auth.asciiPassword': 'Құпиясөз тек латын әріптері (ағылшын орналасуы), сандар мен таңбалар',
     'err.auth.badEmail': 'Пошта пішімін тексер',
     'err.auth.notConfirmed': 'Пошта әлі расталмаған',
     'err.auth.generic': 'Сұранысты орындау мүмкін болмады. Тағы көр',
@@ -851,8 +853,6 @@ export const MESSAGES = {
     'auth.navProfile': 'Профиль',
     'auth.navSignOut': 'Шығу',
     'auth.navSignIn': 'Кіру',
-    'auth.showPassword': 'Құпиясөзді көрсету',
-    'auth.hidePassword': 'Құпиясөзді жасыру',
   },
   en: {
     // --- meta (translateMeta() обновляет <title> и meta-теги) ---
@@ -1182,6 +1182,8 @@ export const MESSAGES = {
     'auth.registerBody': 'An account is only needed to post food — whoever posts it answers for that food. You can browse and call without signing in.',
     'auth.email': 'Email',
     'auth.password': 'Password',
+    'auth.showPassword': 'Show password',
+    'auth.hidePassword': 'Hide password',
     'auth.name': 'Name',
     'auth.phone': 'Phone',
     'auth.region': 'District',
@@ -1230,9 +1232,9 @@ export const MESSAGES = {
 
     // --- err: auth (auth.js authMessage — возвращает ключ) ---
     'err.auth.badCredentials': 'Wrong email or password',
-    'err.auth.asciiPassword': 'Password must use Latin letters (English layout), digits and symbols only',
     'err.auth.emailTaken': 'This email is already registered',
     'err.auth.weakPassword': 'The password is too short — at least 6 characters',
+    'err.auth.asciiPassword': 'Password must use Latin letters (English layout), digits and symbols only',
     'err.auth.badEmail': 'Check the email format',
     'err.auth.notConfirmed': 'The email is not confirmed yet',
     'err.auth.generic': 'Could not complete the request. Try again',
@@ -1275,7 +1277,5 @@ export const MESSAGES = {
     'auth.navProfile': 'Profile',
     'auth.navSignOut': 'Sign out',
     'auth.navSignIn': 'Sign in',
-    'auth.showPassword': 'Show password',
-    'auth.hidePassword': 'Hide password',
   },
 };
